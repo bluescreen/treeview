@@ -1,8 +1,8 @@
 var DIR = {
-    LEFT:0,
-    RIGHT:270,
-    UP: 180,
-    DOWN:360
+    LEFT:  0,
+    RIGHT: 270,
+    UP:    180,
+    DOWN:  360
 };
 
 var Tree = {
@@ -11,13 +11,13 @@ var Tree = {
     data:     [],
     depth:    6,
 
-    init:     function (callback) {
-        this.loadData(callback);
+    init:     function (num, callback) {
+        this.loadData(num, callback);
     },
-    loadData: function (callback) {
+    loadData: function (num,callback) {
         var request = $.ajax({
             type:       'POST',
-            url:        "/data.php",
+            url:        "/data.php?num="+num,
             dataType:   'json',
             beforeSend: function (data) {
                 $('#loading').show();
@@ -37,9 +37,9 @@ var Tree = {
             var match = matches[i];
             var node  = nodes[i];
 
-            //		Turtle.setColor('red');
-            //		Turtle.drawText(match.points2,node.x+5, node.y+35);
-            //		Turtle.drawText(match.points1,node.x+5, node.y-26);
+            Turtle.setColor('red');
+            //Turtle.drawText(match.points_red,node.x+5, node.y+35);
+            //Turtle.drawText(match.points_white,node.x+5, node.y-26);
             Tree.addLink(match.title, match.link, node.x + 10, node.y + 10);
 
             Turtle.setColor('black');
@@ -49,11 +49,13 @@ var Tree = {
 
     drawNames: function (participants, nodes) {
         Turtle.setColor('black');
+        var numNodes = nodes.length;
         for (var i in participants) {
-            var p    = participants[i];
-            var node = nodes[i];
+            var p      = participants[i];
+            var node   = nodes[i];
+            var offset = (i < (numNodes / 2)) ? -30 : 70;
 
-            Turtle.drawText(p.name, node.x - 70, node.y + 5);
+            Turtle.drawText(p.name, node.x - offset, node.y + 5);
         }
     },
 
@@ -142,7 +144,7 @@ var Tree = {
         var $this = Tree;
 
         Turtle.clearCanvas();
-//		$this.drawSingleTree(3,90);
+        //$this.drawSingleTree(this.data.depth,270);
         $this.drawDoubleTree(this.data.depth);
 
         Turtle.setColor('red');
@@ -163,7 +165,7 @@ var Tree = {
         for (var i in nodes) {
             var node = nodes[i];
             Turtle.drawCircle(node.x, node.y, 5);
-            Turtle.drawText(i, node.x + 5, node.y + 20);
+            //Turtle.drawText(i, node.x + 5, node.y + 20);
         }
     },
 

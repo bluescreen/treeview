@@ -14,20 +14,21 @@ class Seed {
     public function createPlayoffMatches($seeds, $depth)
     {
         $this->recursivePlayoffMatchTree($depth);
-        /*$leafs = Match::getLeafs('Match.id');
-
+        $leafs = Match::getLeafs('Match.id');
         $match_seeds = $this->seedToMatches($leafs, $seeds);
         foreach ($match_seeds as $match_id => $c) {
             @list($white, $red) = $c;
-            $this->Match->id = $match_id;
-            $this->Match->assignCompetitors($white, $red);
-        }*/
+            /** @var Match $match */
+            $match = Match::find($match_id);
+            $match->assignCompetitors($white, $red);
+        }
         //$this->orderMatches(6);
     }
 
     protected function recursivePlayoffMatchTree($depth = 0, $count = 0, $parent_id = null)
     {
         if ($depth < 0) {
+            Match::fixTree();
             return;
         }
         if ($this->maxDepth == null) {

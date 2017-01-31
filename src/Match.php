@@ -42,6 +42,14 @@ class Match extends Model {
         return ($this->red) ? $this->red->name : 'BYE';
     }
 
+    public function assignCompetitors($white, $red)
+    {
+        $this->update([
+            'white_id' => ($white > 0) ? $white : -1,
+            'red_id'   => ($red > 0) ? $red : -1
+        ]);
+    }
+
     public static function getMatchPartcipants()
     {
         $matches = Match::with('red', 'white')->whereRaw('rght = lft + 1')->get();

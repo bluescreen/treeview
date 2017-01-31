@@ -21,7 +21,7 @@ Competition::create([
     'mode'     => 'elimination'
 ]);
 
-$num = 16;
+$num = isset($_REQUEST['num']) ? $_REQUEST['num'] : 4;
 
 for ($i = 1; $i <= $num; $i++) {
     $competitor = Competitor::create(['id' => $i, 'name' => 'Test ' . $i, 'pass_nr' => $i]);
@@ -29,9 +29,9 @@ for ($i = 1; $i <= $num; $i++) {
 }
 $depth = ceil(log($num,2))-1;
 
+$seeds = Participant::inRandomOrder()->lists('competitor_id');
 $seed = new Seed();
-$seed->createPlayoffMatches([], $depth);
-Match::fixTree();
+$seed->createPlayoffMatches($seeds, $depth);
 
 
 $participant = new Participant();

@@ -1,6 +1,6 @@
 <?php
 include_once "vendor/autoload.php";
-$config = include_once "config.php.dist";
+$config = include_once "config.php";
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
