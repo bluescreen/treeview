@@ -3,58 +3,85 @@
 <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
 
 <script>
-$(document).on('ready',function() {
-	$('#update-button').click(function(){
-		console.log('redraw tree');
-		Tree.loadData();
-		return false;
-	});
-	$('#download-button').click(function(){
-		Turtle.export();
-		return false;
-	});
-	Tree.setCanvas('canvas1');	
-	Tree.init(8,function(){
-		Tree.draw();
-	});
-});
+    $(document).on('ready', function () {
+        $('#numParticipants, #treeType').on('change', function () {
+            console.log('redraw tree');
+            var numParticipants = $('#numParticipants').val();
+            var treeType        = $("#treeType").val();
+            if(treeType == 'single'){
+                numParticipants *= 2;
+            }
+
+            Tree.loadData(numParticipants, function () {
+                Tree.draw(treeType);
+            });
+            return false;
+        });
+        $('#download-button').click(function () {
+            Turtle.export();
+            return false;
+        });
+        Tree.setCanvas('canvas1');
+        Tree.init(8, function () {
+            Tree.draw('double');
+        });
+    });
 </script>
 <style>
-.canvas.ui-resizable{
-	border:1px solid #ccc;
-	float:left;
-}
-#canvas_wrapper{
-	width:98%;
-}
+    .canvas.ui-resizable {
+        border: 1px solid #ccc;
+        float: left;
+    }
 
-#links{
-	position:relative;
-	background:#fff;
-}
-#links a.link{
-	position:absolute;
-	color:#000;
-	display:block;
-	width:100px;
-	text-align:right;
-	text-decoration:none;
-	font-size:12px;
-}
-#links .link:hover{
-	color:#f00;
-}
-#canvas1{
-		border:1px solid #ccc;
-		background:#fff;
-}
+    #canvas_wrapper {
+        width: 98%;
+    }
+
+    #links {
+        position: relative;
+        background: #fff;
+    }
+
+    #links a.link {
+        position: absolute;
+        color: #000;
+        display: block;
+        width: 100px;
+        text-align: right;
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+    #links .link:hover {
+        color: #f00;
+    }
+
+    #canvas1 {
+        border: 1px solid #ccc;
+        background: #fff;
+    }
 
 </style>
 
 <div data-role="header">
-	<h1>Elimination Treeview</h1>
+    <h1>Elimination Tree</h1>
+
+    <select id="numParticipants">
+        <option value="2">2 participants</option>
+        <option value="4">4 participants</option>
+        <option value="8" selected>8 participants</option>
+        <option value="16">16 participants</option>
+        <option value="32">32 participants</option>
+        <option value="64">64 participants</option>
+    </select>
+    <select id="treeType">
+        <option value="single">Single Tree</option>
+        <option value="double" selected>Double Tree</option>
+    </select>
+
+    <button id="download-button">Download</button>
 </div>
 <div id="canvas_wrapper">
-	<canvas id="canvas1" class="canvas resizeable" width="1000" height="550"></canvas>
-	<canvas id="canvas2" class="canvas resizeable" width="1000" height="550"></canvas>
+    <canvas id="canvas1" class="canvas resizeable" width="1000" height="550"></canvas>
+    <canvas id="canvas2" class="canvas resizeable" width="1000" height="550"></canvas>
 </div>
