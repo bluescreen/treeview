@@ -1,0 +1,60 @@
+<script type="text/javascript" src="js/turtle.js"></script>
+<script type="text/javascript" src="js/tree.js"></script>
+<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+
+<script>
+$(document).on('ready',function() {
+	$('#update-button').click(function(){
+		console.log('redraw tree');
+		Tree.loadData();
+		return false;
+	});
+	$('#download-button').click(function(){
+		Turtle.export();
+		return false;
+	});
+	Tree.setCanvas('canvas1');	
+	Tree.init(function(){
+		Tree.draw();
+	});
+});
+</script>
+<style>
+.canvas.ui-resizable{
+	border:1px solid #ccc;
+	float:left;
+}
+#canvas_wrapper{
+	width:98%;
+}
+
+#links{
+	position:relative;
+	background:#fff;
+}
+#links a.link{
+	position:absolute;
+	color:#000;
+	display:block;
+	width:100px;
+	text-align:right;
+	text-decoration:none;
+	font-size:12px;
+}
+#links .link:hover{
+	color:#f00;
+}
+#canvas1{
+		border:1px solid #ccc;
+		background:#fff;
+}
+
+</style>
+
+<div data-role="header">
+	<h1>Elimination Treeview</h1>
+</div>
+<div id="canvas_wrapper">
+	<canvas id="canvas1" class="canvas resizeable" width="1000" height="550"></canvas>
+	<canvas id="canvas2" class="canvas resizeable" width="1000" height="550"></canvas>
+</div>

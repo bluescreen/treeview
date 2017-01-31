@@ -1,0 +1,12 @@
+{
+    "autoload": {
+        "psr-4": {
+            "ITaikai\\": "src/"
+        }
+    },
+    "require": {
+        "kalnoy/nestedset": "4.2.1",
+        "illuminate/database": "5.2.*",
+        "symfony/var-dumper": "~2.6"
+    }
+}
