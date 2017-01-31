@@ -1,0 +1,8 @@
+<?php
+
+return [
+    'database' => 'DATABASE',
+    'host' => 'localhost',
+    'username'  => "USER",
+    'password'  => "PASSWORD",
+];
