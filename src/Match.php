@@ -9,6 +9,14 @@ class Match extends Model {
 
     use NodeTrait;
 
+    const WAITING       = 0;
+    const RUNNING       = 1;
+    const PAUSED        = 2;
+    const FINISHED      = 3;
+    const NEED_DECISION = 4;
+    const INVALID       = 5;
+
+
     protected $guarded    = [];
     public    $timestamps = false;
 

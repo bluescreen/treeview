@@ -21,13 +21,20 @@ Competition::create([
 
 $num = isset($_REQUEST['num']) ? $_REQUEST['num'] : 4;
 
+$faker = Faker\Factory::create('en_GB');
+
 for ($i = 1; $i <= $num; $i++) {
-    $competitor = Competitor::create(['id' => $i, 'name' => 'Test ' . $i, 'pass_nr' => $i]);
+    $competitor = Competitor::create([
+        'id'         => $i,
+        'name'       => $faker->lastName,
+        'first_name' => $faker->firstName,
+        'pass_nr'    => $i
+    ]);
     Participant::create(['competitor_id' => $competitor->id, 'tournament_id' => 1, 'group_id' => 1]);
 }
-$depth = ceil(log($num,2))-1;
+$depth = ceil(log($num, 2)) - 1;
 
 
 $seeds = Participant::inRandomOrder()->lists('competitor_id');
-$seed = new Seed();
+$seed  = new Seed();
 $seed->createPlayoffMatches($seeds, $depth);
