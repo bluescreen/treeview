@@ -1,0 +1,52 @@
+<?php
+
+use ITaikai\Competition;
+use ITaikai\Competitor;
+use ITaikai\Group;
+use ITaikai\Referee;
+use ITaikai\Team;
+
+$factory(Competition::class, function () use ($faker) {
+
+    return [
+        'name'       => $faker->sentence,
+        'date'       => $faker->dateTime,
+        'group_size' => 3,
+        'type'       => 'individual',
+        'mode'       => 'elimination',
+        'location'   => $faker->locale
+    ];
+});
+
+$factory(Competitor::class, function () use ($faker) {
+    return [
+        'name'       => $faker->lastName,
+        'first_name' => $faker->firstName,
+        'birth_date' => $faker->dateTime,
+        'pass_nr'    => microtime(),
+        'grading_id' => rand(1, 8)
+    ];
+});
+
+$factory(Referee::class, function () use ($faker) {
+    return [
+        'first_name' => $faker->firstName,
+        'last_name'  => $faker->lastName,
+        'alias'      => '',
+        'grading_id' => rand(1, 8)
+    ];
+});
+
+$factory(Team::class, function () use ($faker) {
+    return [
+        'name'          => "Team ".uniqid(),
+        'tournament_id' => 1
+    ];
+});
+
+$factory(Group::class, function () use ($faker) {
+    return [
+        'name'          => "Group ".uniqid(),
+        'tournament_id' => 1
+    ];
+});

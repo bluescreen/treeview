@@ -1,0 +1,47 @@
+<?php
+
+
+namespace ITaikai;
+
+
+class TeamMatch extends Model {
+
+    public function matches()
+    {
+        return $this->hasMany(Match::class, 'team_matches_id');
+    }
+
+    public function red()
+    {
+        return $this->belongsTo(Team::class, 'team_id1');
+    }
+
+    public function white()
+    {
+        return $this->belongsTo(Team::class, 'team_id2');
+    }
+
+    public function createSubMatches($teamSize = 3)
+    {
+        $positions = Configure::read('App.team_positions');
+
+        $this->matches()->delete();
+        $team1 = $this->red()->with('participants')->first();
+        $team2 = $this->white()->with('participants')->first();
+
+        for ($i = 0; $i < $teamSize; $i++) {
+            $competitor1 = isset($team1->participants[$i]) ? $team1->participants[$i]->pivot->participant_id : -1;
+            $competitor2 = isset($team2->participants[$i]) ? $team2->participants[$i]->pivot->participant_id : -1;
+            $title       = $this->title . " " . $positions[$i];
+
+            $match = Match::createTeamSubMatch($competitor1, $competitor2, $this->id, $title, $i + 1);
+            if ($i == 0) {
+                $first_match = $match->id;
+            }
+        }
+        if (isset($first_match)) {
+            $this->saveField('current_match', $first_match);
+        }
+        return true;
+    }
+}

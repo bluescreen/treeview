@@ -2,12 +2,17 @@
     "autoload": {
         "psr-4": {
             "ITaikai\\": "src/"
-        }
+        },
+        "classmap": [
+            "tests"
+        ]
     },
     "require": {
         "kalnoy/nestedset": "4.2.1",
         "illuminate/database": "5.2.*",
         "symfony/var-dumper": "~2.6",
-        "fzaninotto/faker": "1.4"
+        "fzaninotto/faker": "1.4",
+        "phpunit/phpunit": "^5.7",
+        "laracasts/TestDummy": "^2.3"
     }
 }

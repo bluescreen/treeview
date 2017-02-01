@@ -1,7 +1,6 @@
 <?php
 namespace ITaikai;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Kalnoy\Nestedset\NodeTrait;
 
@@ -16,9 +15,10 @@ class Match extends Model {
     const NEED_DECISION = 4;
     const INVALID       = 5;
 
+    const EMPTY_PLACE = -1;
 
-    protected $guarded    = [];
-    public    $timestamps = false;
+
+    protected $guarded = [];
 
     protected $casts = [
         'score_white',
@@ -35,9 +35,12 @@ class Match extends Model {
         return $this->belongsTo(Competitor::class, 'white_id');
     }
 
+    /**
+     * @return Collection
+     */
     public static function getLeafs()
     {
-        return self::whereRaw("rght = lft + 1")->lists('title', 'id')->all();
+        return self::whereRaw("rght = lft + 1")->lists('title', 'id');
     }
 
     public function getWhiteName()
@@ -57,6 +60,15 @@ class Match extends Model {
             'red_id'   => ($red > 0) ? $red : -1
         ]);
     }
+
+    public function assignToArea($number, $area_id)
+    {
+        $this->update([
+            'order_number' => $number,
+            'area_id'      => $area_id + 1,
+        ]);
+    }
+
 
     public static function getMatchPartcipants()
     {
@@ -110,6 +122,11 @@ class Match extends Model {
         return $result;
     }
 
+    public static function addEmpty($name, $parrent_id = null, $depth = null, $nextPos = null)
+    {
+        return self::add(self::EMPTY_PLACE, self::EMPTY_PLACE, null, $name, $parrent_id, $depth, $nextPos);
+    }
+
     public static function add($competitor1, $competitor2, $group_id = null, $name = null, $parent_id = null, $depth = null, $next_pos = null)
     {
 
@@ -136,6 +153,23 @@ class Match extends Model {
         return $match;
     }
 
+    public static function createTeamSubMatch($competitor1, $competitor2, $team_match_id = null, $title = '', $pos = null, $max_points = 2)
+    {
+        $score = json_encode(['men' => 0, 'kote' => 0, 'do' => 0, 'tsuki' => 0, 'penalty' => 0, 'hansoku' => 0]);
+        return self::create([
+            'white_id'        => $competitor1,
+            'red_id'          => $competitor2,
+            //'tournament_id'	=> $this->tournament_id,
+            'score_white'     => $score,
+            'score_red'       => $score,
+            'team_matches_id' => $team_match_id,
+            'title'            => $title,
+            'status'          => 0,
+            'max_points'      => $max_points,
+            'pos'             => $pos
+        ]);
+    }
+
     public function getLftName()
     {
         return 'lft';
@@ -149,6 +183,35 @@ class Match extends Model {
     public function getParentIdName()
     {
         return 'parent_id';
+    }
+
+    public function referees()
+    {
+        return $this->belongsToMany(Referee::class, 'referee_matches');
+    }
+
+    public function assignReferees($referees)
+    {
+
+        $this->referees()->detach();
+        foreach ($referees as $position => $referee) {
+            $this->referees()->attach($referee, [
+                'position' => $position
+            ]);
+
+        }
+
+        /*
+        $this->RefereeMatch->deleteAll(array('match_id'=>$this->id));
+        foreach($referees as $position => $referee_id){
+            $this->RefereeMatch->create();
+            $this->RefereeMatch->save(array(
+                'match_id'		=> $this->id,
+                'referee_id'	=> $referee_id,
+                'position' 		=> $position
+            ));
+        }
+        return true;*/
     }
 
 }

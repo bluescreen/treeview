@@ -5,6 +5,14 @@
 
 <script>
     $(document).on('ready', function () {
+        $('#redraw-button').on('click', function(){
+            var numParticipants = $('#numParticipants').val();
+            var treeType        = $("#treeType").val();
+            Tree.loadData(numParticipants, function () {
+                Tree.draw(treeType);
+            });
+        });
+
         $('#numParticipants, #treeType').on('change', function () {
             console.log('redraw tree');
             var numParticipants = $('#numParticipants').val();
@@ -83,7 +91,8 @@
     </select>
 
     <button id="download-button">Download</button>
+    <button id="redraw-button">Redraw</button>
 </div>
 <div id="canvas_wrapper">
-    <canvas id="canvas1" class="canvas resizeable" width="1000" height="550" style="width:100%"></canvas>
+    <canvas id="canvas1" class="canvas resizeable" width="1000" height="550"></canvas>
 </div>

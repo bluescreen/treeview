@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'driver' => 'mysql',
     'database' => 'DATABASE',
     'host' => 'localhost',
     'username'  => "USER",

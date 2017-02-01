@@ -13,7 +13,10 @@ var Turtle = {
 	
 	
 	init: function(id){
-		canvas = document.getElementById(id); 
+		canvas = document.getElementById(id);
+        canvas.width = document.body.clientWidth-50;
+        canvas.height = document.body.clientHeight;
+
 		this.canvas = canvas;
 		this.g = canvas.getContext("2d");
 		this.width = canvas.width;
