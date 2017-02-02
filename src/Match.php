@@ -2,11 +2,10 @@
 namespace ITaikai;
 
 use Illuminate\Support\Collection;
-use Kalnoy\Nestedset\NodeTrait;
 
 class Match extends Model {
 
-    use NodeTrait;
+    use NestedSet;
 
     const WAITING       = 0;
     const RUNNING       = 1;
@@ -33,14 +32,6 @@ class Match extends Model {
     public function white()
     {
         return $this->belongsTo(Competitor::class, 'white_id');
-    }
-
-    /**
-     * @return Collection
-     */
-    public static function getLeafs()
-    {
-        return self::whereRaw("rght = lft + 1")->lists('title', 'id');
     }
 
     public function getWhiteName()
@@ -168,21 +159,6 @@ class Match extends Model {
             'max_points'      => $max_points,
             'pos'             => $pos
         ]);
-    }
-
-    public function getLftName()
-    {
-        return 'lft';
-    }
-
-    public function getRgtName()
-    {
-        return 'rght';
-    }
-
-    public function getParentIdName()
-    {
-        return 'parent_id';
     }
 
     public function referees()

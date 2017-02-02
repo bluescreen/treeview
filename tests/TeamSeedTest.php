@@ -36,5 +36,22 @@ class TeamSeedTest extends TestCase {
         $this->assertCount(5,$match->matches);
     }
 
+    /** @test */
+    public function it_should_seed_team_elimination(){
+        $this->given_competitors(20);
+        factory(Referee::class, [], 3);
+        factory(Team::class, [], 4);
+        Participant::autoassignToTeams();
+
+        $seed  = new TeamSeed();
+        $seed->setTeamSize(3);
+        $seed->setup('elimination');
+
+        /** @var TeamMatch $match */
+        $match = TeamMatch::first();
+        $this->assertNotNull($match);
+        $this->assertCount(5,$match->matches);
+    }
+
 
 }

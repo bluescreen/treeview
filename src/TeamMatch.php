@@ -6,6 +6,28 @@ namespace ITaikai;
 
 class TeamMatch extends Model {
 
+    use NestedSet;
+
+    public static function addEmpty($string, $parentId, $depth, $nextMatchId)
+    {
+        /** @var TeamMatch $teamMatch */
+        $teamMatch = TeamMatch::create([
+            'title'    => $string,
+            'team_id1' => Match::EMPTY_PLACE,
+            'team_id2' => Match::EMPTY_PLACE,
+            'depth'    => $depth,
+            'next_pos' => $nextMatchId
+        ]);
+        if ($parentId == null) {
+            $teamMatch->makeRoot();
+        } else {
+            $teamMatch->setParentId($parentId);
+        }
+        $teamMatch->createSubMatches();
+
+        return $teamMatch;
+    }
+
     public function matches()
     {
         return $this->hasMany(Match::class, 'team_matches_id');

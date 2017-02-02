@@ -10,7 +10,7 @@ include_once "bootstrap.php";
 Competition::clear();
 $num = isset($_REQUEST['num']) ? $_REQUEST['num'] : 4;
 factory(Competition::class);
-factory(Competitor::class, [], 16);
+factory(Competitor::class, [], $num);
 Competitor::participateAll();
 
 $seed  = new IndividualSeed();
