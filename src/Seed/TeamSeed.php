@@ -19,7 +19,7 @@ class TeamSeed extends Seed {
 
     public function createRandomMatch()
     {
-        $teams = Team::inRandomOrder()->limit(2)->lists('id');
+        $teams = Team::inRandomOrder()->limit(2)->pluck('id');
         if ($teams->count() < 2) {
             throw new \Exception("Not enough teams");
         }
@@ -116,9 +116,9 @@ class TeamSeed extends Seed {
     public function getSeedingList($seed_group)
     {
         if ($seed_group) {
-            return Group::lists('id')->all();
+            return Group::pluck('id')->all();
         } else {
-            return Team::lists('id')->all();
+            return Team::pluck('id')->all();
         }
     }
 }

@@ -38,7 +38,7 @@ class IndividualSeed extends Seed {
 
     public function createPoolMatches($group, $seedingSchema)
     {
-        $participants = Participant::lists('competitor_id');
+        $participants = Participant::pluck('competitor_id');
         $letter       = sprintf("%c", $group->group_pos + 64);
 
         foreach ($seedingSchema as $i => $row) {
@@ -52,7 +52,7 @@ class IndividualSeed extends Seed {
 
     public function getSeedingList($type)
     {
-        return Participant::inRandomOrder()->lists('competitor_id', 'competitor_id')->all();
+        return Participant::inRandomOrder()->pluck('competitor_id', 'competitor_id')->all();
     }
 
 
@@ -67,7 +67,7 @@ class IndividualSeed extends Seed {
 
 
         $matches = $matches->map(function($record){
-            $record->matchIds = Match::where('depth', $record->depth)->orderBy('id')->lists('id')->implode(',');
+            $record->matchIds = Match::where('depth', $record->depth)->orderBy('id')->pluck('id')->implode(',');
             return $record;
         });
 

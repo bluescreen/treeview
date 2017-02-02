@@ -29,6 +29,6 @@ trait NestedSet  {
      */
     public static function getLeafs()
     {
-        return self::whereRaw("rght = lft + 1")->lists('title', 'id');
+        return self::whereRaw("rght = lft + 1")->pluck('title', 'id');
     }
 }

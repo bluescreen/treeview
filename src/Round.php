@@ -10,7 +10,7 @@ class Round extends Model {
     }
 
     public function updateRound(){
-        $matches = $this->matches()->lists('status','id');
+        $matches = $this->matches()->pluck('status','id');
         if(empty($matches)) return;
 
         $this->saveField('matches_count',count($matches));
