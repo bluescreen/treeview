@@ -10,6 +10,8 @@ include_once "bootstrap.php";
 
 Competition::clear();
 $num = isset($_REQUEST['num']) ? $_REQUEST['num'] : 4;
+$num = ($num == 'random') ? rand(2,32) : $num;
+
 factory(Competition::class);
 factory(Competitor::class, [], $num);
 Competitor::participateAll();

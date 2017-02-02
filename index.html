@@ -8,6 +8,7 @@
         $('#redraw-button').on('click', function(){
             var numParticipants = $('#numParticipants').val();
             var treeType        = $("#treeType").val();
+
             Tree.loadData(numParticipants, function () {
                 Tree.draw(treeType);
             });
@@ -17,9 +18,7 @@
             console.log('redraw tree');
             var numParticipants = $('#numParticipants').val();
             var treeType        = $("#treeType").val();
-            if(treeType == 'single'){
-                numParticipants *= 2;
-            }
+
 
             Tree.loadData(numParticipants, function () {
                 Tree.draw(treeType);
@@ -32,7 +31,7 @@
         });
         Tree.setCanvas('canvas1');
         Tree.init(8, function () {
-            Tree.draw('double');
+            Tree.draw('single');
         });
     });
 </script>
@@ -83,11 +82,11 @@
         <option value="16">16 participants</option>
         <option value="32">32 participants</option>
         <option value="64">64 participants</option>
-        <option value="128">128 participants</option>
+        <option value="random">Random participants</option>
     </select>
     <select id="treeType">
-        <option value="single">Single Tree</option>
-        <option value="double" selected>Double Tree</option>
+        <option value="single" selected>Single Tree</option>
+        <option value="double">Double Tree</option>
     </select>
 
     <button id="download-button">Download</button>

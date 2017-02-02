@@ -16,6 +16,10 @@ var Tree = {
         this.loadData(num, callback);
     },
     loadData: function (num,callback) {
+        Turtle.clearCanvas();
+        Turtle.setColor("black");
+        Turtle.drawText('Loading ...',50,50);
+
         Tree.branches = [];
         Tree.leafs = [];
 
@@ -151,7 +155,7 @@ var Tree = {
         Turtle.clearCanvas();
 
         if(type == 'single'){
-            $this.drawSingleTree(this.data.depth,270);
+            $this.drawSingleTree(this.data.depth+1,270);
         } else{
             $this.drawDoubleTree(this.data.depth);
         }
