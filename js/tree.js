@@ -72,7 +72,6 @@ var Tree = {
     },
 
     drawPaths: function (paths) {
-        console.log(paths);
         for (var i in paths) {
 
             var path = paths[i];
@@ -166,9 +165,6 @@ var Tree = {
         Turtle.setColor('blue');
         $this.markNodes(Tree.leafs);
 
-        console.log($this.data.matches);
-        console.log(Tree.branches);
-
         $this.drawMatches($this.data.matches, Tree.branches);
         $this.drawNames($this.data.participants, Tree.leafs);
         $this.drawPaths($this.data.paths);
@@ -178,11 +174,12 @@ var Tree = {
         for (var i in nodes) {
             var node = nodes[i];
             Turtle.drawCircle(node.x, node.y, 5);
-            //Turtle.drawText(i, node.x + 5, node.y + 20);
+            Turtle.drawText(i, node.x - 15, node.y + 20);
         }
     },
 
     markPath: function (path, nodes) {
+        console.log(path);
         for (var key in path) {
             var k       = parseInt(key);
             var val     = path[k];
@@ -190,8 +187,7 @@ var Tree = {
             var node    = nodes[val];
             var next    = (next_nr != undefined) ? nodes[next_nr] : null;
 
-            console.log(key, val, '-> ', next_nr);
-            if (next) {
+            if (node && next) {
                 this.connectNodes(node, next);
             }
         }

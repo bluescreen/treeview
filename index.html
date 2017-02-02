@@ -8,22 +8,26 @@
     <table class="table table-condensed table-striped matches-table">
         <thead>
         <tr>
-            <th>Titel</th>
+            <th>#</th>
+            <th>Title</th>
             <th>White</th>
+            <th>W</th>
+            <td>:</td>
+            <th>R</th>
             <th>Red</th>
-            <th>Score White</th>
-            <th>Score Red</th>
             <th>Winner</th>
         </tr>
         </thead>
         <tbody>
         <% _.each(matches,function(match,key){ %>
         <tr>
+            <td><%= match.id %></td>
             <td><%= match.title %></td>
-            <td><%= match.white_name %></td>
-            <td><%= match.red_name %></td>
+            <td style="border-left: 1px solid #000"><%= match.white_name %></td>
             <td><%= match.points_white %></td>
+            <td>:</td>
             <td><%= match.points_red %></td>
+            <td style="border-right: 1px solid #000"><%= match.red_name %></td>
             <td><%= match.winner %></td>
         </tr>
         <% }); %>
@@ -37,6 +41,7 @@
 
         function updateMatchTable(data) {
             console.log("Update", data.matches);
+            $('#winner-placeholder').html("Winner: "+data.winner);
 
             data.matches = _.sortBy(data.matches, function (match) {
                 return match.depth * -1;
@@ -122,11 +127,15 @@
         white-space: nowrap;
     }
 
+    #winner-placeholder{
+        color:#f00;
+    }
+
 </style>
 
 <div class="container" style="width:90%">
     <div class="row">
-        <div class="col-sm-9">
+        <div class="col-sm-8">
             <h1>Elimination Tree</h1>
 
             <select id="numParticipants" class="form-control">
@@ -153,6 +162,8 @@
         <div class="col-sm-3">
             <h1 style="margin-bottom:1em;">Matches</h1>
             <div id="matches-placeholder"></div>
+
+            <h1 id="winner-placeholder"></h1>
         </div>
     </div>
 </div>

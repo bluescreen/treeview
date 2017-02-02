@@ -8,7 +8,7 @@ class FightableTest extends TestCase {
     const WHITE = 1;
     const RED   = 2;
 
-    use DatabaseTransactions;
+    //use DatabaseTransactions;
 
     /** @test */
     public function it_should_calculate_penalties()
@@ -77,6 +77,18 @@ class FightableTest extends TestCase {
         $match->simulate();
         $this->assertNotEmpty($match->history);
         $this->assertNotFalse($match->winner_id);
+    }
+
+    /** @test */
+    public function it_should_simulate_all_matches()
+    {
+        $rootMatch = factory(Match::class, ['depth' => 0])->makeRoot();
+        factory(Match::class, ['depth' => 1, 'next_pos' => $rootMatch->id])->setParentId($rootMatch->id)->save();
+        factory(Match::class, ['depth' => 1, 'next_pos' => $rootMatch->id])->setParentId($rootMatch->id)->save();
+        Match::fixTree();
+        Match::simulateAll(2);
+
+        $this->assertNotNull(Match::getTotalWinner());
     }
 
     /** @test */

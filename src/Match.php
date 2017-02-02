@@ -2,10 +2,11 @@
 namespace ITaikai;
 
 use Illuminate\Support\Collection;
+use ITaikai\Behavior\Eliminiation;
 
 class Match extends Model {
 
-    use NestedSet, Fightable;
+    use NestedSet, Fightable, Eliminiation;
 
     const WAITING       = 0;
     const RUNNING       = 1;
@@ -58,7 +59,23 @@ class Match extends Model {
 
     public function getWinnerName()
     {
-        return ($this->winner) ? $this->winner->name : '-';
+        return ($this->winner) ? $this->winner->fullname : '-';
+    }
+
+    public static function getTotalWinner(){
+        return self::whereNull('parent_id')->where('winner_id', '>', 0)->first()->getWinnerName();
+    }
+
+    public static function simulateAll($depth)
+    {
+        do {
+            /** @var Collection  $matches */
+            $matches =  Match::where('depth', $depth)->get();
+            $matches->each(function (Match $match) {
+                $match->simulate();
+            });
+            $depth--;
+        }while($depth >= 0);
     }
 
 

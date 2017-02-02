@@ -25,15 +25,6 @@ class Configure {
             'max_points'     => 2,        // sanbon shobu
             'max_time'       => 180,    // Kampfzeit
             'max_overtime'   => 360,    // Verlängerung
-            /*
-            'hits' => array(
-                'men'		=> array('symbol'=> 'M', 'percent'=> 60,   'message' => '%s men ari!'),
-                'kote'		=> array('symbol'=> 'K', 'percent'=> 28,   'message' => '%s kote ari!'),
-                'do'		=> array('symbol'=> 'D', 'percent'=> 10,   'message' => '%s do ari!'),
-                'tsuki'		=> array('symbol'=> 'T', 'percent'=> 1,    'message' => '%s tsuki ari!'),
-                'penalty'	=> array('symbol'=> '▲', 'percent'=> 1,	   'message' => '%s hansoku ikai!'),
-                'hansoku'	=> array('symbol'=> '❙', 'percent'=> 1,	   'message' => '%s hansoku nikai, ippon ari!'),
-            ),*/
 
             'hits'   => [
                 'men'     => ['symbol' => 'メ', 'percent' => 60, 'message' => '%s men ari!'],

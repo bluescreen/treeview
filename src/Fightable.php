@@ -207,7 +207,6 @@ trait Fightable {
             if ($this->isFinished()) {
                 break;
             }
-
             $player = array_rand($players);
             if ($this->randPercent($penalty_chance)) { // 10% penalty
                 $this->penalty($player, $time);
@@ -220,7 +219,7 @@ trait Fightable {
             $time += 5;
         } while ($time < 180);
         $this->stop();
-        $this->logHistory('stop simulation', $time);
+        $this->updateMatch();
         return true;
     }
 
