@@ -2,3 +2,5 @@ config.php
 vendor
 phpliteadmin
 *.sh
+test.sqlite
+database.sqlite

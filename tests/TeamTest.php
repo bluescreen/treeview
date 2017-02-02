@@ -7,7 +7,7 @@ use ITaikai\Participant;
 use ITaikai\Team;
 
 class TeamTest extends TestCase {
-    use DatabaseTransactions, Shared;
+    use Shared;
 
     public function setUp()
     {

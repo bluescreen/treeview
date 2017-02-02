@@ -76,11 +76,11 @@ CREATE TABLE "gradings" (
 );
 CREATE TABLE "groups" (
   "id"  integer not null primary key autoincrement,
-  "group_pos" int(11) NOT NULL,
+  "group_pos" int(11),
   "parent_id" int(11) DEFAULT NULL,
-  "next_pos" int(11) NOT NULL,
+  "next_pos" int(11),
   "winner_id" int(11) DEFAULT NULL,
-  "name" varchar(255) NOT NULL,
+  "name" varchar(255),
   "round_id" int(11),
   "tournament_id" int(11),
   "group_size" int(11),
@@ -164,53 +164,53 @@ CREATE TABLE "rounds" (
   "current_match" int(11) DEFAULT NULL
 );
 CREATE TABLE "team_groups" (
-  "team_id"  integer not null primary key autoincrement,
-  "tournament_id" int(11) NOT NULL,
-  "group_id" int(11) NOT NULL,
-  "pos" int(11) NOT NULL,
-  "id" int(11) NOT NULL ,
-  "alias" varchar(50) NOT NULL
+  "id"  integer not null primary key autoincrement,
+  "team_id"  integer,
+  "tournament_id" int(11),
+  "group_id" int(11),
+  "pos" int(11),
+  "alias" varchar(50)
 );
 CREATE TABLE "team_matches" (
   "id"  integer not null primary key autoincrement,
-  "title" varchar(255) NOT NULL,
+  "title" varchar(255),
   "team_id1" int(11) DEFAULT NULL,
   "team_id2" int(11) DEFAULT NULL,
-  "points_white" int(11) NOT NULL,
-  "points_red" int(11) NOT NULL,
-  "winner_id" int(11) NOT NULL,
-  "need_decision" tinyint(1) NOT NULL,
-  "created" datetime NOT NULL,
-  "match_time" int(11) NOT NULL,
-  "status" int(11) NOT NULL,
-  "matches_done" int(11) NOT NULL,
-  "current_match" int(11) NOT NULL,
-  "lft" int(11) NOT NULL,
-  "rght" int(11) NOT NULL,
+  "points_white" int(11),
+  "points_red" int(11),
+  "winner_id" int(11),
+  "need_decision" tinyint(1),
+  "created" datetime,
+  "match_time" int(11),
+  "status" int(11),
+  "matches_done" int(11),
+  "current_match" int(11),
+  "lft" int(11),
+  "rght" int(11),
   "parent_id" int(11) DEFAULT NULL,
-  "next_pos" int(11) NOT NULL,
+  "next_pos" int(11),
   "depth" int(11) DEFAULT NULL,
-  "type" varchar(50) NOT NULL,
-  "round_id" int(11) NOT NULL,
-  "tournament_id" int(11) NOT NULL,
-  "group_id" int(11) NOT NULL
+  "type" varchar(50),
+  "round_id" int(11),
+  "tournament_id" int(11),
+  "group_id" int(11)
 );
 CREATE TABLE "team_participants" (
-  "participant_id" int(11)  PRIMARY KEY NOT NULL,
+  "id" integer not null primary key autoincrement,
+  "participant_id" int(11) NOT NULL,
   "team_id" int(11) DEFAULT NULL,
-  "tournament_id" int(11) NOT NULL,
-  "position" int(11) DEFAULT NULL,
-  "id" int(11) NOT NULL
+  "tournament_id" int(11) DEFAULT NULL,
+  "position" int(11) DEFAULT NULL
 );
 CREATE TABLE "teams" (
   "id"  integer not null primary key autoincrement,
   "name" varchar(100) NOT NULL,
-  "symbol" varchar(10) NOT NULL,
-  "tournament_id" int(11) NOT NULL,
-  "team_participant_count" int(11) NOT NULL,
-  "level" float NOT NULL,
-  "size" int(11) NOT NULL,
-  "group_id" int(11) NOT NULL
+  "symbol" varchar(10),
+  "tournament_id" int(11),
+  "team_participant_count" int(11),
+  "level" float,
+  "size" int(11),
+  "group_id" int(11)
 );
 CREATE TABLE "users" (
   "id"  integer not null primary key autoincrement,

@@ -7,7 +7,7 @@ $config = include_once "config.php";
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-if ($config['driver'] == 'sqlite') {
+if (APPLICATION_ENV == 'testing') {
     touch($config['database']);
     exec("sqlite3 ".$config['database']." < data.sql");
 }
