@@ -8,7 +8,7 @@ class TeamMatch extends Model {
 
     use NestedSet;
 
-    public static function addEmpty($string, $parentId, $depth, $nextMatchId)
+    public static function addEmpty($string, $parentId = 0, $depth = 0, $nextMatchId = 0)
     {
         /** @var TeamMatch $teamMatch */
         $teamMatch = TeamMatch::create([
@@ -43,7 +43,7 @@ class TeamMatch extends Model {
         return $this->belongsTo(Team::class, 'team_id2');
     }
 
-    public function createSubMatches($teamSize = 3)
+    public function createSubMatches($teamSize = 5)
     {
         $positions = Configure::read('App.team_positions');
 

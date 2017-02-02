@@ -20,10 +20,15 @@ class Match extends Model {
     protected $guarded = [];
 
     protected $casts = [
-        'score_white',
-        'score_red'
+        'score_white' => 'array',
+        'score_red'   => 'array'
     ];
 
+
+    public function referees()
+    {
+        return $this->belongsToMany(Referee::class, 'referee_matches');
+    }
 
     public function red()
     {
@@ -60,7 +65,6 @@ class Match extends Model {
             'area_id'      => $area_id + 1,
         ]);
     }
-
 
     public static function getMatchPartcipants()
     {
@@ -102,9 +106,9 @@ class Match extends Model {
     {
         //$data = $this->find("list", ['order' => 'lft', 'fields' => 'Match.id,Match.id']);
         //$data    = self::orderBy('lft')->lists('id', 'id')->all();
-        $paths   = Match::selectRaw("winner_id,group_concat(id) as path")
+        $paths  = Match::selectRaw("winner_id,group_concat(id) as path")
             ->where('winner_id', '>', 0)->groupBy('winner_id')->get();
-        $result  = [];
+        $result = [];
         foreach ($paths as $row) {
             foreach (explode(',', $row->path) as $match_id) {
                 $result[$row->winner_id][] = $match_id;
@@ -126,8 +130,8 @@ class Match extends Model {
         $match = self::create([
             'white_id'    => $competitor1,
             'red_id'      => $competitor2,
-            'score_white' => json_encode($score),
-            'score_red'   => json_encode($score),
+            'score_white' => $score,
+            'score_red'   => $score,
             'group_id'    => $group_id,
             'title'       => $name,
             'status'      => 0,
@@ -153,21 +157,15 @@ class Match extends Model {
             'score_white'     => $score,
             'score_red'       => $score,
             'team_matches_id' => $team_match_id,
-            'title'            => $title,
+            'title'           => $title,
             'status'          => 0,
             'max_points'      => $max_points,
             'pos'             => $pos
         ]);
     }
 
-    public function referees()
-    {
-        return $this->belongsToMany(Referee::class, 'referee_matches');
-    }
-
     public function assignReferees($referees)
     {
-
         $this->referees()->detach();
         foreach ($referees as $position => $referee) {
             $this->referees()->attach($referee, [
@@ -175,18 +173,6 @@ class Match extends Model {
             ]);
 
         }
-
-        /*
-        $this->RefereeMatch->deleteAll(array('match_id'=>$this->id));
-        foreach($referees as $position => $referee_id){
-            $this->RefereeMatch->create();
-            $this->RefereeMatch->save(array(
-                'match_id'		=> $this->id,
-                'referee_id'	=> $referee_id,
-                'position' 		=> $position
-            ));
-        }
-        return true;*/
     }
 
 }

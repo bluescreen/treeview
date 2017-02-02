@@ -25,7 +25,6 @@ class Group extends Model {
         } while ($currentGroups != $neededGroups);
     }
 
-
     public static function add($group_size = null, $parent_id = null)
     {
         $last = self::orderBy('group_pos', 'DESC')->first();
