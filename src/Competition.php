@@ -7,6 +7,7 @@ class Competition extends Model {
     public $timestamps = false;
 
     public static function clear(){
+        Competition::truncate();
         Match::truncate();
         Participant::truncate();
         Match::truncate();

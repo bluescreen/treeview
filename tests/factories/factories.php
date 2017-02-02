@@ -14,17 +14,21 @@ $factory(Competition::class, function () use ($faker) {
         'group_size' => 3,
         'type'       => 'individual',
         'mode'       => 'elimination',
-        'location'   => $faker->locale
+        'location'   => $faker->city
     ];
 });
 
 $factory(Competitor::class, function () use ($faker) {
+    $firstName = $faker->firstName;
+    $lastName  = $faker->lastName;
+
     return [
-        'name'       => $faker->lastName,
-        'first_name' => $faker->firstName,
+        'name'       => $lastName,
+        'first_name' => $firstName,
+        'alias'      => '',
         'birth_date' => $faker->dateTime,
         'pass_nr'    => microtime(),
-        'grading_id' => rand(1, 8)
+        'grading_id' => rand(1, 8),
     ];
 });
 
@@ -39,14 +43,14 @@ $factory(Referee::class, function () use ($faker) {
 
 $factory(Team::class, function () use ($faker) {
     return [
-        'name'          => "Team ".uniqid(),
+        'name'          => "Team " . uniqid(),
         'tournament_id' => 1
     ];
 });
 
 $factory(Group::class, function () use ($faker) {
     return [
-        'name'          => "Group ".uniqid(),
+        'name'          => "Group " . uniqid(),
         'tournament_id' => 1
     ];
 });

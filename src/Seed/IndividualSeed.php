@@ -55,10 +55,21 @@ class IndividualSeed extends Seed {
         return Participant::inRandomOrder()->lists('competitor_id', 'competitor_id')->all();
     }
 
+
+
     private function orderMatches($area_count = 2)
     {
-        $matches = Match::selectRaw('depth, count(matches.id) as count, group_concat(DISTINCT matches.id ORDER BY matches.id ASC) as matchIds')
-            ->orderBy('depth', 'DESC')->orderBy('id', 'ASC')->groupBy('depth')->get();
+        $matches = Match::selectRaw('depth, count(matches.id) as count')
+            ->orderBy('depth', 'DESC')
+            ->orderBy('id', 'ASC')
+            ->groupBy('depth')
+            ->get();
+
+
+        $matches = $matches->map(function($record){
+            $record->matchIds = Match::where('depth', $record->depth)->orderBy('id')->lists('id')->implode(',');
+            return $record;
+        });
 
         $sortedMatches = [];
         foreach ($matches as $i => $match) {

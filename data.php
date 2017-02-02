@@ -7,6 +7,7 @@ use ITaikai\Seed\IndividualSeed;
 
 include_once "bootstrap.php";
 
+
 Competition::clear();
 $num = isset($_REQUEST['num']) ? $_REQUEST['num'] : 4;
 factory(Competition::class);

@@ -24,6 +24,7 @@ class Match extends Model {
         'score_red'
     ];
 
+
     public function red()
     {
         return $this->belongsTo(Competitor::class, 'red_id');

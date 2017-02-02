@@ -2,7 +2,6 @@
 
 
 use ITaikai\Competition;
-use ITaikai\DatabaseTransactions;
 use ITaikai\Group;
 use ITaikai\Participant;
 use ITaikai\Team;

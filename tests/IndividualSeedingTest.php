@@ -2,7 +2,6 @@
 
 
 use ITaikai\Competition;
-use ITaikai\DatabaseTransactions;
 use ITaikai\Group;
 use ITaikai\Match;
 use ITaikai\Referee;
@@ -51,6 +50,7 @@ class IndividualSeedingTest extends TestCase {
 
     /** @test */
     public function it_should_seed_individual_pool(){
+        factory(Competition::class, ['group_size' => 3]);
         $this->given_competitors(12);
 
 
@@ -66,6 +66,8 @@ class IndividualSeedingTest extends TestCase {
 
     /** @test */
     public function it_should_seed_individual_both(){
+        factory(Competition::class, ['group_size' => 3]);
+
         $this->given_competitors(24);
 
         $seed  = new IndividualSeed();

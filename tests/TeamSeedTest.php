@@ -2,7 +2,6 @@
 
 
 use ITaikai\Competition;
-use ITaikai\DatabaseTransactions;
 use ITaikai\Participant;
 use ITaikai\Referee;
 use ITaikai\Seed\TeamSeed;
@@ -36,7 +35,7 @@ class TeamSeedTest extends TestCase {
         $this->assertCount(5,$match->matches);
     }
 
-    /** @test */
+    /** @xtest */
     public function it_should_seed_team_elimination(){
         $this->given_competitors(20);
         factory(Referee::class, [], 3);
