@@ -9,13 +9,10 @@ class Group extends Model {
     public static function adjust($maxPerGroup, $count = 0)
     {
         if ($count <= 0 || $maxPerGroup <= 0) {
-            return false;
+            return;
         }
-        //$this->recusive = 0;
         $neededGroups   = (int)ceil($count / $maxPerGroup);
         $currentGroups  = self::count();
-        //$this->log("Existing groups $currentGroups for $count, needed groups $neededGroups");
-
         do {
             if ($currentGroups < $neededGroups) {
                 self::add($maxPerGroup);
@@ -46,6 +43,6 @@ class Group extends Model {
 
     private static function removeLast()
     {
-        self::orderBy('group_pos', 'DESC')->delete();
+        self::orderBy('group_pos', 'DESC')->first()->delete();
     }
 }
