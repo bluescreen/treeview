@@ -1,16 +1,61 @@
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="js/turtle.js"></script>
 <script type="text/javascript" src="js/tree.js"></script>
 <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="js/underscore-min.js"></script>
 
+<script type="text/template" id="matches-template">
+    <table class="table table-condensed table-striped matches-table">
+        <thead>
+        <tr>
+            <th>Titel</th>
+            <th>White</th>
+            <th>Red</th>
+            <th>Score White</th>
+            <th>Score Red</th>
+            <th>Winner</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% _.each(matches,function(match,key){ %>
+        <tr>
+            <td><%= match.title %></td>
+            <td><%= match.white_name %></td>
+            <td><%= match.red_name %></td>
+            <td><%= match.points_white %></td>
+            <td><%= match.points_red %></td>
+            <td><%= match.winner %></td>
+        </tr>
+        <% }); %>
+        </tbody>
+    </table>
+</script>
 
 <script>
     $(document).on('ready', function () {
-        $('#redraw-button').on('click', function(){
+        var template = $('#matches-template').html();
+
+        function updateMatchTable(data) {
+            console.log("Update", data.matches);
+
+            data.matches = _.sortBy(data.matches, function (match) {
+                return match.depth * -1;
+            });
+
+            var compiled = _.template(template);
+            $('#matches-placeholder').html(compiled({
+                matches: data.matches
+            }));
+        }
+
+
+        $('#redraw-button').on('click', function () {
             var numParticipants = $('#numParticipants').val();
             var treeType        = $("#treeType").val();
 
-            Tree.loadData(numParticipants, function () {
+            Tree.loadData(numParticipants, function (data) {
                 Tree.draw(treeType);
+                updateMatchTable(data);
             });
         });
 
@@ -20,8 +65,9 @@
             var treeType        = $("#treeType").val();
 
 
-            Tree.loadData(numParticipants, function () {
+            Tree.loadData(numParticipants, function (data) {
                 Tree.draw(treeType);
+                updateMatchTable(data);
             });
             return false;
         });
@@ -30,8 +76,9 @@
             return false;
         });
         Tree.setCanvas('canvas1');
-        Tree.init(8, function () {
+        Tree.init(8, function (data) {
             Tree.draw('single');
+            updateMatchTable(data);
         });
     });
 </script>
@@ -40,10 +87,6 @@
     .canvas.ui-resizable {
         border: 1px solid #ccc;
         float: left;
-    }
-
-    #canvas_wrapper {
-        width: 98%;
     }
 
     #links {
@@ -70,28 +113,46 @@
         background: #fff;
     }
 
+    select.form-control {
+        width: auto;
+        display: inline-block;
+    }
+
+    .matches-table {
+        white-space: nowrap;
+    }
+
 </style>
 
-<div data-role="header">
-    <h1>Elimination Tree</h1>
+<div class="container" style="width:90%">
+    <div class="row">
+        <div class="col-sm-9">
+            <h1>Elimination Tree</h1>
 
-    <select id="numParticipants">
-        <option value="2">2 participants</option>
-        <option value="4">4 participants</option>
-        <option value="8" selected>8 participants</option>
-        <option value="16">16 participants</option>
-        <option value="32">32 participants</option>
-        <option value="64">64 participants</option>
-        <option value="random">Random participants</option>
-    </select>
-    <select id="treeType">
-        <option value="single" selected>Single Tree</option>
-        <option value="double">Double Tree</option>
-    </select>
+            <select id="numParticipants" class="form-control">
+                <option value="2">2 participants</option>
+                <option value="4">4 participants</option>
+                <option value="8" selected>8 participants</option>
+                <option value="16">16 participants</option>
+                <option value="32">32 participants</option>
+                <option value="64">64 participants</option>
+                <option value="random">Random participants</option>
+            </select>
+            <select id="treeType" class="form-control">
+                <option value="single" selected>Single Tree</option>
+                <option value="double">Double Tree</option>
+            </select>
 
-    <button id="download-button">Download</button>
-    <button id="redraw-button">Redraw</button>
-</div>
-<div id="canvas_wrapper">
-    <canvas id="canvas1" class="canvas resizeable" width="1000" height="550"></canvas>
+            <button id="download-button" class="btn btn-primary">Download</button>
+            <button id="redraw-button" class="btn btn-primary">Redraw</button>
+
+            <div id="canvas_wrapper" style="max-width:100%">
+                <canvas id="canvas1" class="canvas resizeable" width="1000" height="550"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <h1 style="margin-bottom:1em;">Matches</h1>
+            <div id="matches-placeholder"></div>
+        </div>
+    </div>
 </div>

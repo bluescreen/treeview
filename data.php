@@ -19,6 +19,10 @@ Competitor::participateAll();
 $seed  = new IndividualSeed();
 $seed->setup('elimination');
 
+Match::whereRaw("rght = lft + 1")->each(function (Match $match){
+    $match->simulate();
+});
+
 $depth        = $seed->getDepth()-1;
 $pools        = Participant::getNameList();
 $matches      = Match::getTreeMatches();

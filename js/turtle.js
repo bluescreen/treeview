@@ -14,8 +14,9 @@ var Turtle = {
 	
 	init: function(id){
 		canvas = document.getElementById(id);
-        canvas.width = document.body.clientWidth-50;
-        canvas.height = document.body.clientHeight;
+		var wrapper= $('#canvas_wrapper');
+        canvas.width = wrapper.width()-50;
+        canvas.height = wrapper.height();
 
 		this.canvas = canvas;
 		this.g = canvas.getContext("2d");

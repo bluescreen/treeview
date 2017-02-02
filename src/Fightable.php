@@ -13,58 +13,198 @@ use Exception;
  * @mixin Match
  */
 trait Fightable {
-    protected $messages = [];
-    protected $history  = [];
-    protected $chances  = [];
-    protected $hits     = [];
-    protected $model    = null;
+    protected $history = [];
+    protected $chances = [];
+    protected $hits    = [];
+    protected $model   = null;
 
     private $score_fields = ['white' => 'score_white', 'red' => 'score_red'];
 
-    public function updateFight($time){
+    public function updateFight($time = 0)
+    {
+        if ($this->status == self::RUNNING) {
+            $this->checkPlayers();                  // Kämpfer beide anwesend?
+            $this->calcPoints();                    // Punkte zusammenrechnen
+            $this->calcPenalty();                   // Strafpunkte berechnen
+            $this->checkWinner($time);              // Gewinner bestimmen
+        }
         $this->time = $time;
+        $this->save();
+        $this->log("Time: " . $time . " Winner: " . $this->winner_id . " Red: " . $this->points_red . " White: " . $this->points_white);
+    }
+
+    public function reset()
+    {
+        $score = ['men' => 0, 'kote' => 0, 'do' => 0, 'tsuki' => 0, 'penalty' => 0, 'hansoku' => 0];
+        return $this->update([
+            'score_white'  => $score,
+            'score_red'    => $score,
+            'points_white' => 0,
+            'points_red'   => 0,
+            'status'       => 0,
+            'winner_id'    => 0,
+            'history'      => '',
+            'time'         => 0
+        ]);
+    }
+
+
+    /** Prüf Funktionen **/
+
+    // Anwesenheit prüfen
+    private function checkPlayers()
+    {
+        if ($this->white_id <= 0 && $this->red_id <= 0) { // Keiner da 	 -> Kampf abbrechen
+            throw new Exception(__('Cannot start Match because no competitors'));
+        } elseif ($this->red_id <= 0) {                    // Rot nicht da  -> Weiß gewinnt durch Freilos
+            $this->points_white = 2;
+            $this->winner_id    = $this->white_id;
+            $this->status       = self::FINISHED;
+        } elseif ($this->white_id <= 0) {                    // Weiß nicht da -> Rot gewinnt durch Freilos
+            $this->points_red = 2;
+            $this->winner_id  = $this->red_id;
+            $this->status     = self::FINISHED;
+        }
+    }
+
+    // Gewinner bestimmmen
+    public function checkWinner($time = 0, $overtime = false)
+    {
+        if ($this->winner_id > 0) {
+            return $this->winner_id;
+        }
+        $winner_id = false;
+
+        // bei Freilosen direkt weiter
+        if ($this->white_id == -1) {
+            $winner_id = $this->red_id;
+        }
+        if ($this->red_id == -1) {
+            $winner_id = $this->white_id;
+        }
+
+        // Zeitabgelaufen? Dann gewinnt der mit der meisten Treffern
+        if ($time >= $this->max_time) {
+            if (!$overtime) {
+                if ($this->points_white > $this->points_red) {
+                    $winner_id = $this->white_id;
+                } // Weiß gewinnt
+                elseif ($this->points_red > $this->points_white) {
+                    $winner_id = $this->red_id;
+                }    // Rot gewinnt
+                elseif ($this->points_white == $this->points_red) {
+                    $winner_id = false;
+                }  // Draw
+            }
+        } // Ansonsten gewinnt der der als erstes 2 punkte erreicht
+        else {
+            if ($this->points_white >= $this->max_points) {
+                $winner_id = $this->white_id;
+            }
+            if ($this->points_red >= $this->max_points) {
+                $winner_id = $this->red_id;
+            }
+        }
+
+        if ($winner_id != false) {
+            $this->winner_id = $winner_id;
+            $this->status    = self::FINISHED;
+        } else {
+            $this->status = self::RUNNING;
+        }
+        $this->save();
+        return $winner_id;
+    }
+
+    public function isFinished()
+    {
+        return $this->status == self::FINISHED || $this->winner_id > 0;
+    }
+
+    // Die Summe berechnen
+    private function getScoreSum($score)
+    {
+        if (!is_array($score)) {
+            return 0;
+        }
+        // don't count the penalty points
+        if (isset($score['penalty'])) {
+            unset($score['penalty']);
+        }
+        return array_sum($score);
+    }
+
+    // Punkte zusammenrechnen
+    private function calcPoints()
+    {
+        $score_white = $this->getScoreWhite();
+        $score_red   = $this->getScoreRed();
+        // Punktsumme bilden, falls freilos punkt
+        if ($this->getScoreSum($score_white) > 0) {
+            $this->points_white = $this->getScoreSum($score_white);
+        }
+        if ($this->getScoreSum($score_red) > 0) {
+            $this->points_red = $this->getScoreSum($score_red);
+        }
+    }
+
+    // Strafpunkte berechnen
+    // Kendo Regeln -> bei 2 Strafpunkten kriegt der Gegner einen Punkt
+    public function calcPenalty()
+    {
+        $score_white = $this->getScoreWhite();
+        $score_red   = $this->getScoreRed();
+
+        if (isset($score_white['penalty'])) {
+            if ($score_white['penalty'] < 2) {
+                $score_red['hansoku'] = 0;
+            } elseif ($score_white['penalty'] % 2 == 0) {
+                $score_red['hansoku'] = (int)($score_white['penalty'] / 2);
+            }
+        }
+        if (isset($score_red['penalty'])) {
+            if ($score_red['penalty'] < 2) {
+                $score_white['hansoku'] = 0;
+            } elseif ($score_red['penalty'] % 2 == 0) {
+                $score_white['hansoku'] = (int)($score_red['penalty'] / 2);
+            }
+        }
+        $this->score_white = json_encode($score_white);
+        $this->score_red   = json_encode($score_red);
         $this->save();
     }
 
-    public function start($m)
+    public function start()
     {
-        $name1 = $m['White']['alias'];
-        $name2 = $m['Red']['alias'];
-
-        $this->saveField('status', RUNNING);
-        $this->log("\n-> $name1 vs $name2");
+        $this->status = self::RUNNING;
+        $this->save();
+        //$this->log("\n-> $name1 vs $name2");
     }
 
-    public function stop(&$model)
+    public function stop()
     {
-        $this->model->log("\nResult: $this->points_white : $this->points_red | $this->time -> $this->winner_id");
+        $this->status = self::FINISHED;
+        $this->save();
+        //$this->model->log("\nResult: $this->points_white : $this->points_red | $this->time -> $this->winner_id");
     }
 
     public function simulate()
     {
-        if ($this->white_id <= -1 && $m->red_id <= -1) {
+        if ($this->white_id <= -1 && $this->red_id <= -1) {
             throw new Exception('Cannot simulate Match without Competitors');
         }
 
         $this->reset();
-
-        $timeup         = false;
-        $starttime      = time();
         $time           = 0;
         $hit_chance     = Configure::read('App.rules.chance_hit');
         $penalty_chance = Configure::read('App.rules.chance_penalty');
-        $players        = ['red' => 1, 'white' => 2];
-        $current_status = RUNNING;
+        $chances        = $this->getHitChances();
 
-        $this->history(__('Start simulation %d', $this->id), $time);
-        $this->start($data);
-
-        while ($time < 180) {
-            $model->updateFight($time);
-            $status         = $model->read("winner_id,status");
-            $current_status = $status[$model->alias]['status'];
-            $winner_id      = $status[$model->alias]['winner_id'];
-            if ($winner_id > 0 || $current_status == Match::FINISHED) {
+        $players = ['red' => 1, 'white' => 2];
+        $this->start();
+        $this->logHistory(__('Start simulation %d', $this->id), $time);
+        do {
+            if ($this->isFinished()) {
                 break;
             }
 
@@ -72,65 +212,52 @@ trait Fightable {
             if ($this->randPercent($penalty_chance)) { // 10% penalty
                 $this->penalty($player, $time);
             } elseif ($this->randPercent($hit_chance)) {
-                $hit = $this->getRandomHit();
+                $hit = $this->getRandomHit($chances);
                 $this->addPoint($player, $hit, $time);
-            } else {
-                //	$model->log("$time: ... ");
             }
             $this->updateFight($time);
+
             $time += 5;
-        }
-
-        $this->stop($model);
-        $this->history('stop simulation', $time);
-        $model->update();
-
+        } while ($time < 180);
+        $this->stop();
+        $this->logHistory('stop simulation', $time);
         return true;
     }
 
     public function addPoint($player, $hit, $time = null)
     {
-        $data = $model->read('status,score_red,score_white');
-
-        if (in_array($data[$model->alias]['status'], [Match::FINISHED, Match::PAUSED])) {
-            return false;
+        if (in_array($this->status, [self::FINISHED, Match::PAUSED])) {
+            return;
         }
-        $score_field = $this->score_fields[$player];
-        $new_score   = $data[$model->alias][$score_field];
+        $score_field          = $this->score_fields[$player];
+        $new_score            = ($player == 'white') ? $this->getScoreWhite() : $this->getScoreRed();
+        $new_score[$hit]      = isset($new_score[$hit]) ? $new_score[$hit] + 1 : 0;
+        $this->{$score_field} = json_encode($new_score);
+        $this->save();
 
-
-        $new_score[$hit] = isset($new_score[$hit]) ? $new_score[$hit] + 1 : 0;
-        return $this->save([$score_field => $new_score]);
+        $this->logHistory($hit, $time, $player);
     }
 
-    public function removePoint(&$model, $player, $hit, $time = null)
+    public function getScoreWhite()
     {
-        if (!$model->exists()) {
-            throw new Exception('Cannot update the score');
-        }
-        $data = $model->read('status,score_red,score_white');
-
-        if (in_array($data[$model->alias]['status'], [Match::FINISHED, Match::PAUSED])) {
-            return false;
-        }
-        $score_field = $this->score_fields[$player];
-        $new_score   = $data[$model->alias][$score_field];
-        if ($new_score[$hit] > 0) {
-            $new_score[$hit]--;
-        }
-        $model->save([$score_field => $new_score]);
+        return is_string($this->score_white) ? json_decode($this->score_white, 1) : $this->score_white;
     }
 
+    public function getScoreRed()
+    {
+        return is_string($this->score_red) ? json_decode($this->score_red, 1) : $this->score_red;
+    }
 
     protected function getTime()
     {
         return isset($_POST['time']) ? 180 - $_POST['time'] : null;
     }
 
-    protected function getRandomHit()
+
+    protected function getRandomHit($chances)
     {
         do {
-            foreach ($this->chances as $hit => $chance) {
+            foreach ($chances as $hit => $chance) {
                 if ($this->randPercent($chance)) {
                     return $hit;
                 }
@@ -138,42 +265,76 @@ trait Fightable {
         } while (1);
     }
 
-    protected function history($msg, $time = 0, $player = null)
+    protected function logHistory($msg, $time = 0, $player = null)
     {
-        $data    = $this->model->read($this->model->alias . ".history");
-        $history = $data[$this->model->alias]['history'];
-        $text    = isset($this->messages[$msg]) ? $this->messages[$msg] : $msg;
+        $messages = Configure::read('hits');
 
-        //	$this->model->log($time.":\t".sprintf($text,$player));
+        $history   = $this->history;
+        $text      = isset($messages[$msg]) ? $messages[$msg]['message'] : $msg;
         $history[] = ['time' => $time, 'msg' => sprintf($text, $player)];
-        $this->saveField('history', $history);
+        $this->update(['history' => $history]);
+        $this->log(sprintf($text, $player));
     }
 
+    public function removePoint($player, $hit, $time = null)
+    {
+        if (in_array($this->status, [self::FINISHED, Match::PAUSED])) {
+            return false;
+        }
+        $score_field = $this->score_fields[$player];
+        $new_score   = $this->getScoreOfPlayer($player);
+        if ($new_score[$hit] > 0) {
+            $new_score[$hit]--;
+        }
+        $this->saveField($score_field, $new_score);
+    }
 
     private function randPercent($chance = 50)
     {
         return (rand(1, 100) <= $chance);
     }
 
-    public function hit(&$model, $hit, $player, $time)
+
+    public function hit($hit, $player, $time = 0)
     {
         if ($hit == "penalty") {
-            if ($data[$model->alias][$player]['penalty'] % 2) {
-                $hit = 'second-penalty';
+            if ($this->getScoreOfPlayer($player)['penalty'] % 2) {
+                $hit = 'hansoku';
             }
         }
-        $this->history($hit, $time, $player);
+        $this->logHistory($hit, $time, $player);
         $this->addPoint($player, $hit, $time);
     }
 
     private function penalty($player, $time)
     {
-        $this->history('penalty', $time, $player);
+        $this->logHistory('penalty', $time, $player);
         $this->addPoint($player, 'penalty', $time);
     }
 
-    private function saveField($field, $value){
-        $this->{$field} = $value;
-        $this->save();
+    /**
+     * @param $player
+     */
+    private function getScoreOfPlayer($player)
+    {
+        return ($player == 'white') ? $this->getScoreWhite() : $this->getScoreRed();
+    }
+
+    /**
+     * @return static
+     */
+    private function getHitChances()
+    {
+        $chances = collect(Configure::read('hits'))->map(function ($hit) {
+            return $hit['percent'];
+        });
+        unset($chances['penalty']);
+        unset($chances['ahnsokue']);
+        return $chances;
+    }
+
+    private function log($msg)
+    {
+        //fwrite(STDOUT, $msg . "\n");
     }
 }

@@ -58,9 +58,17 @@ $factory(Group::class, function () use ($faker) {
 
 $factory(Match::class, function () use ($faker) {
     return [
-        'title'          => "TestMatch",
-        'red_id'        => 1,
-        'white_id'      => 2,
-        'tournament_id' => 1
+        'max_points'    => 2,
+        'max_time'      => 180,
+        'title'         => "TestMatch",
+        'white_id'      => 1,
+        'red_id'        => 2,
+        'tournament_id' => 1,
+        'winner_id'     => 0,
+        'score_red'     => '{"men":0,"kote":0,"do":0,"tsuki":0,"penalty":0,"hansoku":0}',
+        'score_white'   => '{"men":0,"kote":0,"do":0,"tsuki":0,"penalty":0,"hansoku":0}',
+        'points_white'  => 0,
+        'points_red'    => 0,
+
     ];
 });

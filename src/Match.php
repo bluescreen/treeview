@@ -5,7 +5,7 @@ use Illuminate\Support\Collection;
 
 class Match extends Model {
 
-    use NestedSet;
+    use NestedSet, Fightable;
 
     const WAITING       = 0;
     const RUNNING       = 1;
@@ -21,7 +21,8 @@ class Match extends Model {
 
     protected $casts = [
         'score_white' => 'array',
-        'score_red'   => 'array'
+        'score_red'   => 'array',
+        'history'     => 'array'
     ];
 
 
@@ -40,15 +41,26 @@ class Match extends Model {
         return $this->belongsTo(Competitor::class, 'white_id');
     }
 
+    public function winner()
+    {
+        return $this->belongsTo(Competitor::class, 'winner_id');
+    }
+
     public function getWhiteName()
     {
-        return ($this->white) ? $this->white->name : 'BYE';
+        return ($this->white) ? $this->white->name : '';
     }
 
     public function getRedName()
     {
-        return ($this->red) ? $this->red->name : 'BYE';
+        return ($this->red) ? $this->red->name : '';
     }
+
+    public function getWinnerName()
+    {
+        return ($this->winner) ? $this->winner->name : '-';
+    }
+
 
     public function assignCompetitors($white, $red)
     {
@@ -94,9 +106,12 @@ class Match extends Model {
                 'winner_id'    => (int)$match->winner_id,
                 'points_white' => (int)$match->points_white,
                 'points_red'   => (int)$match->points_red,
+                'red_name'     => $match->getRedName(),
+                'white_name'   => $match->getWhiteName(),
                 'score_white'  => $match->score_white,
                 'score_red'    => $match->score_red,
-                'name'         => "WINNER NAME",
+                'depth'        => $match->depth,
+                'winner'         => $match->getWinnerName(),
                 'id'           => $match->id
             ];
         });
@@ -174,5 +189,6 @@ class Match extends Model {
 
         }
     }
+
 
 }
