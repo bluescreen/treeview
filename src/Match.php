@@ -120,7 +120,6 @@ class Match extends Model {
 
     public static function add($competitor1, $competitor2, $group_id = null, $name = null, $parent_id = null, $depth = null, $next_pos = null)
     {
-
         $score = ['men' => 0, 'kote' => 0, 'do' => 0, 'tsuki' => 0, 'penalty' => 0, 'hansoku' => 0];
 
         /** @var Match $match */

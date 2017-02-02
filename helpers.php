@@ -11,7 +11,7 @@ function array_mirror($array)
 
 function __($text){
     $args = func_get_args();
-    unset($args[0]);
+    array_shift($args);
     return sprintf($text, $args);
 }
 

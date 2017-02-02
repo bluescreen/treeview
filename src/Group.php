@@ -34,12 +34,13 @@ class Group extends Model {
         $last = self::orderBy('group_pos', 'DESC')->first();
         $group_pos = (!empty($last)) ? $last->group_pos : 0;
         $next_pos  = (!empty($last)) ? $last->next_pos : 0;
+
         return self::create([
             'group_size' => $group_size,
             'next_pos'   => ($next_pos == 1) ? 2 : 1,
             'group_pos'  => $group_pos + 1,
             'parent_id'  => $parent_id,
-            'name'       => __('Group %d', $group_pos + 1),
+            'name'       => __('Group')." ".($group_pos + 1),
         ]);
     }
 
