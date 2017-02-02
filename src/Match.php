@@ -101,14 +101,13 @@ class Match extends Model {
     public static function getTreePaths()
     {
         //$data = $this->find("list", ['order' => 'lft', 'fields' => 'Match.id,Match.id']);
-        $data    = self::orderBy('lft')->lists('id', 'id')->all();
-        $matches = array_mirror(array_keys($data));
-        $paths   = self::query("SELECT winner_id,group_concat(id) as path FROM `matches` where winner_id  > 0 group by winner_id");
+        //$data    = self::orderBy('lft')->lists('id', 'id')->all();
+        $paths   = Match::selectRaw("winner_id,group_concat(id) as path")
+            ->where('winner_id', '>', 0)->groupBy('winner_id')->get();
         $result  = [];
         foreach ($paths as $row) {
-            $winner_id = $row['matches']['winner_id'];
-            foreach (explode(',', $row[0]['path']) as $match_id) {
-                $result[$winner_id][] = $matches[$match_id];
+            foreach (explode(',', $row->path) as $match_id) {
+                $result[$row->winner_id][] = $match_id;
             }
         }
         return $result;

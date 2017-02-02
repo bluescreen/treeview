@@ -3,6 +3,7 @@
 use ITaikai\Competition;
 use ITaikai\Competitor;
 use ITaikai\Group;
+use ITaikai\Match;
 use ITaikai\Referee;
 use ITaikai\Team;
 
@@ -51,6 +52,15 @@ $factory(Team::class, function () use ($faker) {
 $factory(Group::class, function () use ($faker) {
     return [
         'name'          => "Group " . uniqid(),
+        'tournament_id' => 1
+    ];
+});
+
+$factory(Match::class, function () use ($faker) {
+    return [
+        'title'          => "TestMatch",
+        'red_id'        => 1,
+        'white_id'      => 2,
         'tournament_id' => 1
     ];
 });
