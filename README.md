@@ -1,5 +1,7 @@
 # treeview
-Elimination Tree generator for Kendo
+Elimination Tree generator for Kendo Tournament Trees
+
+Can generate and simulate tree based match hierarchies.
 
 Install
 
@@ -16,3 +18,6 @@ Run unit tests
 ```
 vendor/bin/phpunit tests
 ```
+
+
+
