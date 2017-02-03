@@ -27,6 +27,7 @@ var Tree = {
     data:     [],
     depth:    6,
     type:     null,
+    debug: true,
 
     init:     function (num, callback) {
         this.loadData(num, callback);
@@ -181,11 +182,13 @@ var Tree = {
         $this.drawNames($this.data.participants, Tree.leafs);
         $this.drawPaths($this.data.paths, mappedLeafs);
 
-        Turtle.setColor('red');
-        $this.markNodes(Tree.branches);
+        if(Tree.debug) {
+            Turtle.setColor('red');
+            $this.markNodes(Tree.branches);
 
-        Turtle.setColor('blue');
-        $this.markNodes(Tree.leafs);
+            Turtle.setColor('blue');
+            $this.markNodes(Tree.leafs);
+        }
     },
 
     mapLeafsToParticpants: function (participants, leafs) {
@@ -244,7 +247,7 @@ var Tree = {
     drawTree: function (depth, l, v) {
         var t = Turtle;
         if (depth > 0) {
-            t.forward(v).right(90).show();
+            t.forward(v).right(90);
             Tree.branches.push(new BranchNode(t.getPos()));
             t.forward(l).left(90);
 
