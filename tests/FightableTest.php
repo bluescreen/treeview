@@ -8,7 +8,7 @@ class FightableTest extends TestCase {
     const WHITE = 1;
     const RED   = 2;
 
-    //use DatabaseTransactions;
+    use DatabaseTransactions;
 
     /** @test */
     public function it_should_calculate_penalties()
