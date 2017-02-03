@@ -42,7 +42,7 @@ var Tree = {
 
         var request = $.ajax({
             type:       'POST',
-            url:        "/data.php?num=" + num,
+            url:        "data.php?num=" + num,
             dataType:   'json',
             beforeSend: function (data) {
                 $('#loading').show();
