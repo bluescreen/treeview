@@ -19,5 +19,12 @@ Run unit tests
 vendor/bin/phpunit tests
 ```
 
+## Usage
 
-
+To generate and simulate a elimination round 
+```
+Competitor::participateAll();
+$seed = new IndividualSeed();
+$seed->setup('elimination');
+Match::simulateAll($seed->getDepth());
+```
