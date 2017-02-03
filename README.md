@@ -3,7 +3,7 @@ Elimination Tree generator for Kendo Tournament Trees
 
 Can generate and simulate tree based match hierarchies.
 
-Install
+
 
 Clone repository and install dependencies
 ```
