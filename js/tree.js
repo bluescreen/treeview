@@ -4,28 +4,44 @@ var DIR = {
     UP:    180,
     DOWN:  360
 };
+var Node = function (pos) {
+    this.x = pos.x;
+    this.y = pos.y;
+};
+var BranchNode = function (pos) {
+    this.x = pos.x;
+    this.y = pos.y;
+};
+var LeafNode = function (pos) {
+    this.x = pos.x;
+    this.y = pos.y;
+};
+LeafNode.prototype = Object.create(Node.prototype);
+BranchNode.prototype = Object.create(Node.prototype);
+
 
 var Tree = {
+    root: null,
     branches: [],
     leafs:    [],
     data:     [],
     depth:    6,
-    type: null,
+    type:     null,
 
     init:     function (num, callback) {
         this.loadData(num, callback);
     },
-    loadData: function (num,callback) {
+    loadData: function (num, callback) {
         Turtle.clearCanvas();
         Turtle.setColor("black");
-        Turtle.drawText('Loading ...',50,50);
+        Turtle.drawText('Loading ...', 50, 50);
 
         Tree.branches = [];
-        Tree.leafs = [];
+        Tree.leafs    = [];
 
         var request = $.ajax({
             type:       'POST',
-            url:        "/data.php?num="+num,
+            url:        "/data.php?num=" + num,
             dataType:   'json',
             beforeSend: function (data) {
                 $('#loading').show();
@@ -62,21 +78,12 @@ var Tree = {
         for (var i in participants) {
             var p      = participants[i];
             var node   = nodes[i];
-            var offset = 70;
+            var offset = 100;
 
-            if(Tree.type != 'single') {
+            if (Tree.type != 'single') {
                 offset = (i < (numNodes / 2)) ? -20 : 70;
             }
-            Turtle.drawText(p.name, node.x - offset, node.y + 5);
-        }
-    },
-
-    drawPaths: function (paths) {
-        for (var i in paths) {
-
-            var path = paths[i];
-            Tree.markPath(path, Tree.branches);
-
+            Turtle.drawText(p.name + " (" + p.id + ")", node.x - offset, node.y + 5);
         }
     },
 
@@ -122,19 +129,20 @@ var Tree = {
                 l = height / (depth + 2);
                 break;
         }
+        l += 30 * (depth * 0.2);
         Turtle.turnTo(dir);
         Tree.drawTree(depth, l, v);
     },
 
     drawDoubleTree: function (depth) {
         console.log('depth', depth);
-        var padding = 60/depth;
+        var padding = 60 / depth;
 
-        var l = Turtle.height / ((depth + 1) * 2) +70;
+        var l = Turtle.height / ((depth + 1) * 2) + 70;
         var v = (Turtle.width / ((depth + 1) * 2)) - padding;
 
         Turtle.setPos(Turtle.width / 2, Turtle.height / 2)
-        Tree.branches.push(Turtle.getPos());
+        Tree.branches.push(new BranchNode(Turtle.getPos()));
 
         Turtle.turnTo(90);
         Tree.drawTree(depth, l, v);
@@ -148,69 +156,89 @@ var Tree = {
     },
 
     draw: function (type) {
-        var $this = Tree;
+        var $this  = Tree;
         $this.type = type;
 
         Turtle.clearCanvas();
 
-        if(type == 'single'){
-            $this.drawSingleTree(this.data.depth+1,270);
-        } else{
+        if (type == 'single') {
+            $this.drawSingleTree(this.data.depth + 1, 270);
+        } else {
             $this.drawDoubleTree(this.data.depth);
         }
+
+        var mappedLeafs = $this.mapLeafsToParticpants($this.data.participants, Tree.leafs);
+
+        $this.drawMatches($this.data.matches, Tree.branches);
+        $this.drawNames($this.data.participants, Tree.leafs);
+        $this.drawPaths($this.data.paths, mappedLeafs);
 
         Turtle.setColor('red');
         $this.markNodes(Tree.branches);
 
         Turtle.setColor('blue');
         $this.markNodes(Tree.leafs);
+    },
 
-        $this.drawMatches($this.data.matches, Tree.branches);
-        $this.drawNames($this.data.participants, Tree.leafs);
-        $this.drawPaths($this.data.paths);
+    mapLeafsToParticpants: function (participants, leafs) {
+        var mappedLeafs = [];
+        _.each(participants, function (participant, key) {
+            leafs[key].name             = participant.name;
+            mappedLeafs[participant.id] = leafs[key];
+        });
+        return mappedLeafs;
+    },
+
+    drawPaths: function (paths, mappedLeafs) {
+        _.each(paths, function (path, particpantId) {
+            if (_.isEmpty(path)) {
+                return;
+            }
+            var nodeList = _.map(path, function (key) {
+                return Tree.branches[key];
+            });
+            nodeList.push(mappedLeafs[particpantId]);
+            console.log("Nodes", particpantId, path, nodeList);
+            Tree.connectNodeList(nodeList);
+        });
+    },
+
+    connectNodeList: function (nodes) {
+        var $this = Tree;
+        _.each(nodes, function (node, key) {
+            var next_nr = key + 1;
+            var next    = (next_nr != undefined) ? nodes[next_nr] : null;
+            if (node instanceof Node && next instanceof Node) {
+                $this.connectNodes(node, next);
+            }
+        })
+    },
+
+    connectNodes: function (node1, node2) {
+        Turtle.setColor('red');
+        Turtle.g.lineWidth = 4;
+        Turtle.connect(node1.x, node1.y, node2.x, node2.y);
     },
 
     markNodes: function (nodes) {
         for (var i in nodes) {
             var node = nodes[i];
             Turtle.drawCircle(node.x, node.y, 5);
-            Turtle.drawText(i, node.x - 15, node.y + 20);
+            //Turtle.drawText(i, node.x - 15, node.y + 20);
         }
-    },
-
-    markPath: function (path, nodes) {
-        console.log(path);
-        for (var key in path) {
-            var k       = parseInt(key);
-            var val     = path[k];
-            var next_nr = path[k + 1];
-            var node    = nodes[val];
-            var next    = (next_nr != undefined) ? nodes[next_nr] : null;
-
-            if (node && next) {
-                this.connectNodes(node, next);
-            }
-        }
-
-    },
-
-    connectNodes: function (node1, node2) {
-        Turtle.setColor('red');
-        Turtle.g.lineWidth = 6;
-        Turtle.connect(node1.x, node1.y, node2.x, node2.y);
     },
 
     drawTree: function (depth, l, v) {
         var t = Turtle;
         if (depth > 0) {
             t.forward(v).right(90).show();
-            Tree.branches.push(t.getPos());
+            Tree.branches.push(new BranchNode(t.getPos()));
             t.forward(l).left(90);
 
             this.drawTree(depth - 1, l / 2, v);
             if (depth == 1) {
                 t.forward(v);
-                Tree.leafs.push(t.getPos());
+                Tree.leafs.push(new LeafNode(t.getPos()));
                 t.backward(v);
             }
             t.right(90).backward(2 * l).left(90);
@@ -219,7 +247,7 @@ var Tree = {
             this.drawTree(depth - 1, l / 2, v);
             if (depth == 1) {
                 t.forward(v);
-                Tree.leafs.push(t.getPos());
+                Tree.leafs.push(new LeafNode(t.getPos()));
                 t.backward(v);
             }
             t.right(90).forward(l).left(90).backward(v);

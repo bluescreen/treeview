@@ -59,7 +59,7 @@ class Match extends Model {
 
     public function getWinnerName()
     {
-        return ($this->winner) ? $this->winner->fullname : '-';
+        return ($this->winner) ? $this->winner->name : '-';
     }
 
     public static function getTotalWinner(){
@@ -146,7 +146,9 @@ class Match extends Model {
                 $result[$row->winner_id][] = $match_id;
             }
         }
-        return $result;
+        return collect($result)->map(function($path){
+            return array_map(function($value){ return $value -1; },$path);
+        })->toArray();
     }
 
     public static function addEmpty($name, $parrent_id = null, $depth = null, $nextPos = null)
