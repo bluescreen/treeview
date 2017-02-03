@@ -83,7 +83,7 @@ var Tree = {
             if (Tree.type != 'single') {
                 offset = (i < (numNodes / 2)) ? -20 : 70;
             }
-            Turtle.drawText(p.name + " (" + p.id + ")", node.x - offset, node.y + 5);
+            Turtle.drawText(p.name, node.x - offset, node.y + 5);
         }
     },
 

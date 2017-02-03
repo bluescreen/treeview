@@ -129,6 +129,7 @@
 
     #winner-placeholder{
         color:#f00;
+        text-align: right;
     }
 
 </style>
@@ -136,7 +137,7 @@
 <div class="container" style="width:90%">
     <div class="row">
         <div class="col-sm-8">
-            <h1>Elimination Tree</h1>
+            <h2>Elimination Tree</h2>
 
             <select id="numParticipants" class="form-control">
                 <option value="2">2 participants</option>
@@ -160,10 +161,10 @@
             </div>
         </div>
         <div class="col-sm-3">
-            <h1 style="margin-bottom:1em;">Matches</h1>
+            <h2 style="margin-bottom:1em;">Matches <span class="pull-right" id="winner-placeholder"></span>
+            </h2>
             <div id="matches-placeholder"></div>
 
-            <h1 id="winner-placeholder"></h1>
         </div>
     </div>
 </div>
