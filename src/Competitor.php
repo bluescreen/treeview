@@ -24,5 +24,4 @@ class Competitor extends Model {
             $competitor->participate(1);
         }
     }
-
 }

@@ -4,6 +4,8 @@
 namespace ITaikai;
 
 
+use ITaikai\Behavior\NestedSet;
+
 class TeamMatch extends Model {
 
     use NestedSet;

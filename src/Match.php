@@ -3,6 +3,8 @@ namespace ITaikai;
 
 use Illuminate\Support\Collection;
 use ITaikai\Behavior\Eliminiation;
+use ITaikai\Behavior\Fightable;
+use ITaikai\Behavior\NestedSet;
 
 class Match extends Model {
 

@@ -1,10 +1,12 @@
 <?php
 
 
-namespace ITaikai;
+namespace ITaikai\Behavior;
 
 
 use Exception;
+use ITaikai\Configure;
+use ITaikai\Match;
 
 /**
  * Class Fightable

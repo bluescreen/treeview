@@ -1,9 +1,10 @@
 <?php
 
 
-namespace ITaikai;
+namespace ITaikai\Behavior;
 
 
+use ITaikai\Collection;
 use Kalnoy\Nestedset\NodeTrait;
 
 trait NestedSet  {
