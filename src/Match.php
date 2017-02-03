@@ -114,7 +114,7 @@ class Match extends Model {
     public static function getTreeMatches()
     {
         /** @var Collection $matches */
-        $matches = Match::orderBy('lft')->get();
+        $matches = Match::orderBy('id', 'ASC')->get();
         return $matches->map(function (Match $match) {
             return [
                 'title'        => $match->title,

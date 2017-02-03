@@ -27,4 +27,5 @@ $matches      = Match::getTreeMatches();
 $participants = Match::getMatchPartcipants();
 $paths        = Match::getTreePaths();
 
+header("Content-Type: application/json");
 die(json_encode(compact('depth', 'pools', 'participants', 'matches', 'paths', 'winner')));
