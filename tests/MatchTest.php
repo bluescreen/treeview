@@ -96,7 +96,7 @@ class MatchTest extends TestCase {
         Match::fixTree();
 
         $path = Match::getTreePaths();
-        $this->assertEquals(["1", "3"], $path[1]);
-        $this->assertEquals(["2"], $path[3]);
+        $this->assertEquals([0, 2], $path[1]);
+        $this->assertEquals([1], $path[3]);
     }
 }

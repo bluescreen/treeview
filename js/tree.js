@@ -1,27 +1,27 @@
-var DIR = {
+var DIR              = {
     LEFT:  0,
     RIGHT: 270,
     UP:    180,
     DOWN:  360
 };
-var Node = function (pos) {
+var Node             = function (pos) {
     this.x = pos.x;
     this.y = pos.y;
 };
-var BranchNode = function (pos) {
+var BranchNode       = function (pos) {
     this.x = pos.x;
     this.y = pos.y;
 };
-var LeafNode = function (pos) {
+var LeafNode         = function (pos) {
     this.x = pos.x;
     this.y = pos.y;
 };
-LeafNode.prototype = Object.create(Node.prototype);
+LeafNode.prototype   = Object.create(Node.prototype);
 BranchNode.prototype = Object.create(Node.prototype);
 
 
 var Tree = {
-    root: null,
+    root:     null,
     branches: [],
     leafs:    [],
     data:     [],
@@ -129,7 +129,9 @@ var Tree = {
                 l = height / (depth + 2);
                 break;
         }
-        l += 30 * (depth * 0.2);
+        l += 30 * (depth * 0.2)
+        Tree.root = new Node(Turtle.getPos());
+
         Turtle.turnTo(dir);
         Tree.drawTree(depth, l, v);
     },
@@ -141,8 +143,13 @@ var Tree = {
         var l = Turtle.height / ((depth + 1) * 2) + 70;
         var v = (Turtle.width / ((depth + 1) * 2)) - padding;
 
-        Turtle.setPos(Turtle.width / 2, Turtle.height / 2)
-        Tree.branches.push(new BranchNode(Turtle.getPos()));
+        Turtle.setPos(Turtle.width / 2, Turtle.height / 2);
+
+        var startPos = Turtle.getPos();
+        Tree.branches.push(new BranchNode(startPos));
+
+        startPos.y -= l;
+        Tree.root = new Node(startPos);
 
         Turtle.turnTo(90);
         Tree.drawTree(depth, l, v);
@@ -158,6 +165,7 @@ var Tree = {
     draw: function (type) {
         var $this  = Tree;
         $this.type = type;
+        $this.root = null;
 
         Turtle.clearCanvas();
 
@@ -198,7 +206,10 @@ var Tree = {
                 return Tree.branches[key];
             });
             nodeList.push(mappedLeafs[particpantId]);
-            console.log("Nodes", particpantId, path, nodeList);
+            if (_.contains(path, 0) && Tree.root instanceof Node) { // Add Root node
+                nodeList.unshift(Tree.root);
+            }
+            //console.log("Nodes", particpantId, path, nodeList);
             Tree.connectNodeList(nodeList);
         });
     },
@@ -215,9 +226,11 @@ var Tree = {
     },
 
     connectNodes: function (node1, node2) {
+        var oldLineWidth = Turtle.g.lineWidth;
         Turtle.setColor('red');
         Turtle.g.lineWidth = 4;
         Turtle.connect(node1.x, node1.y, node2.x, node2.y);
+        Turtle.g.lineWidth = oldLineWidth;
     },
 
     markNodes: function (nodes) {
