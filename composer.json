@@ -25,8 +25,8 @@
     },
     "require-dev":{
         "symfony/var-dumper": "~2.6",
-        "phpunit/phpunit": "^5.7",
-        "laracasts/TestDummy": "^2.3",
+        "phpunit/phpunit": "^7.0",
+        "laracasts/testdummy": "^2.3",
         "fzaninotto/faker": "1.4"
     }
 }
