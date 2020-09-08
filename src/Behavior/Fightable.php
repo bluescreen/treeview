@@ -193,7 +193,8 @@ trait Fightable {
     public function simulate()
     {
         if ($this->white_id <= -1 && $this->red_id <= -1) {
-            throw new Exception('Cannot simulate Match without Competitors');
+            $this->stop();
+            return;
         }
 
         $this->reset();

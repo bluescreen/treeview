@@ -117,7 +117,9 @@ class Match extends Model {
     {
         /** @var Collection $matches */
         $matches = Match::orderBy('id', 'ASC')->get();
-        return $matches->map(function (Match $match) {
+        return $matches->filter(function(Match $match){
+            return $match->white_id != -1 && $match->red_id != -1;
+        })->map(function (Match $match) {
             return [
                 'title'        => $match->title,
                 'white_id'     => (int)$match->white_id,

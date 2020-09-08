@@ -4,3 +4,4 @@ phpliteadmin
 *.sh
 test.sqlite
 database.sqlite
+.idea
