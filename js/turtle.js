@@ -27,7 +27,12 @@ var Turtle = {
     },
 
     export: function () {
-        window.location = this.canvas.toDataURL('image/png');
+        var url = this.canvas.toDataURL('image/png');
+        var iframe = "<iframe width='100%' height='100%' src='" + url + "'></iframe>"
+        var x = window.open();
+        x.document.open();
+        x.document.write(iframe);
+        x.document.close();
     },
 
     clearCanvas: function () {

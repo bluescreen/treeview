@@ -1,0 +1,42 @@
+.canvas.ui-resizable {
+    border: 1px solid #ccc;
+    float: left;
+}
+
+#links {
+    position: relative;
+    background: #fff;
+}
+
+#links a.link {
+    position: absolute;
+    color: #000;
+    display: block;
+    width: 100px;
+    text-align: right;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+#links .link:hover {
+    color: #f00;
+}
+
+#canvas1 {
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+select.form-control {
+    width: auto;
+    display: inline-block;
+}
+
+.matches-table {
+    white-space: nowrap;
+}
+
+#winner-placeholder{
+    color:#f00;
+    text-align: right;
+}
