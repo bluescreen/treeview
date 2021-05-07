@@ -5,9 +5,10 @@
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true"
         bootstrap="bootstrap.php"
-        stopOnFailure="true">
+        stopOnFailure="true"
+        defaultTestSuite="unit">
     <testsuites>
-        <testsuite>
+        <testsuite name="unit">
             <directory suffix=".php">Test</directory>
         </testsuite>
     </testsuites>

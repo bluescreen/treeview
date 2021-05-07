@@ -5,3 +5,4 @@ phpliteadmin
 test.sqlite
 database.sqlite
 .idea
+.phpunit.result.cache

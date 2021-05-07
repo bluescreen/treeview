@@ -9,7 +9,7 @@ use ITaikai\Team;
 class TeamTest extends TestCase {
     use Shared;
 
-    public function setUp()
+    public function setUp():void
     {
         parent::setUp();
         Competition::clear();

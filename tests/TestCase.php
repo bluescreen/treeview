@@ -1,10 +1,10 @@
 <?php
-
+use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 class TestCase extends PHPUnit_Framework_TestCase {
 
 
-    public function setUp()
+    public function setUp():void
     {
         parent::setUp();
         if(method_exists($this, 'setupDB')){
@@ -12,7 +12,7 @@ class TestCase extends PHPUnit_Framework_TestCase {
         }
     }
 
-    public function tearDown()
+    public function tearDown():void
     {
         parent::tearDown();
         if(method_exists($this, 'teardownDB')){

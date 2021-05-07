@@ -12,7 +12,7 @@ class TeamSeedTest extends TestCase {
 
     use DatabaseTransactions, Shared;
 
-    public function setUp()
+    public function setUp():void
     {
         parent::setUp();
         Competition::clear();
