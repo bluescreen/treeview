@@ -7,6 +7,11 @@ use ITaikai\Match;
 use ITaikai\Referee;
 use ITaikai\Team;
 
+$factories = [];
+$factory = function ($name, $callback) use ($faker, &$factories) {
+    $factories[$name] = $callback;
+};
+
 $factory(Competition::class, function () use ($faker) {
 
     return [
@@ -56,7 +61,7 @@ $factory(Group::class, function () use ($faker) {
     ];
 });
 
-$factory(Match::class, function () use ($faker) {
+$factory(IndividualMatch::class, function () use ($faker) {
     return [
         'max_points'    => 2,
         'max_time'      => 180,
@@ -72,3 +77,5 @@ $factory(Match::class, function () use ($faker) {
 
     ];
 });
+
+return $factories;

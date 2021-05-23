@@ -1,4 +1,9 @@
 <?php
+
+function dd(){
+    die("<pre>".print_r(func_get_args(), 1)."</pre>");
+}
+
 function array_mirror($array)
 {
     $mirrored = [];
@@ -32,6 +37,19 @@ function matrix($w, $h, $val = 0)
 }
 
 function factory($class, array $attributes = [], $times = 1)
-{
-    return Laracasts\TestDummy\Factory::times($times)->create($class, $attributes);
+{   
+    for($i=0;$i< $times;$i++){
+        $faker = Faker\Factory::create();
+        $factories = include "tests/factories/factories.php";
+        if(!isset($factories[$class])){
+            throw new Exception("Factory for $class not found");
+        }
+        $data = call_user_func($factories[$class]);
+
+        $model = new $class();
+        $model->fill($data + $attributes);
+        $model->save();
+    }
 }
+
+
