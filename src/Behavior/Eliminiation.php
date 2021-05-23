@@ -4,7 +4,7 @@
 namespace ITaikai\Behavior;
 
 
-use ITaikai\Match;
+use ITaikai\IndividualMatch;
 
 trait Eliminiation {
 
@@ -21,10 +21,10 @@ trait Eliminiation {
     }
 
     private function removeFromMatch($match_id,$pos){
-        Match::find($match_id)->saveField($this->positions[$pos],0);
+        IndividualMatch::find($match_id)->saveField($this->positions[$pos],0);
     }
 
     private function moveToNextMatch($competitor_id,$match_id,$pos){
-        Match::find($match_id)->saveField($this->positions[$pos],$competitor_id);
+        IndividualMatch::find($match_id)->saveField($this->positions[$pos],$competitor_id);
     }
 }

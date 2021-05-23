@@ -8,9 +8,9 @@ class Competition extends Model {
 
     public static function clear(){
         Competition::truncate();
-        Match::truncate();
+        IndividualMatch::truncate();
         Participant::truncate();
-        Match::truncate();
+        IndividualMatch::truncate();
         Competitor::truncate();
         Team::truncate();
         TeamMatch::truncate();

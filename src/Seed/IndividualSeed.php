@@ -1,7 +1,7 @@
 <?php
 namespace ITaikai\Seed;
 
-use ITaikai\Match;
+use ITaikai\IndividualMatch;
 use ITaikai\Participant;
 use ITaikai\Referee;
 
@@ -13,8 +13,8 @@ class IndividualSeed extends Seed {
     {
         $referess = Referee::inRandomOrder()->limit(3)->get();
         $p        = Participant::inRandomOrder()->limit(2)->get();
-        /** @var Match $match */
-        $match = Match::create([
+        /** @var IndividualMatch $match */
+        $match = IndividualMatch::create([
             'title'    => 'Random Match',
             'red_id'   => $p[0]->competitor_id,
             'white_id' => $p[1]->competitor_id,
@@ -27,11 +27,11 @@ class IndividualSeed extends Seed {
     public function createPlayoffMatches($participantIds, $depth)
     {
         $this->recursivePlayoffMatchTree($depth);
-        $leafMatches = Match::getLeafs('Match.id')->all();
+        $leafMatches = IndividualMatch::getLeafs('Match.id')->all();
         $matchSeeds  = $this->seedToMatches($participantIds, $leafMatches);
         collect($matchSeeds)->each(function ($seed, $matchId) {
             @list($white, $red) = $seed;
-            Match::find($matchId)->assignCompetitors($white, $red);
+            IndividualMatch::find($matchId)->assignCompetitors($white, $red);
         });
         $this->orderMatches(self::AREAS);
     }
@@ -46,7 +46,7 @@ class IndividualSeed extends Seed {
             $c1 = isset($participants[$w - 1]) ? $participants[$w - 1] : -1;
             $c2 = isset($participants[$r - 1]) ? $participants[$r - 1] : -1;
 
-            Match::add($c1, $c2, $group->id, sprintf("Poolmatch %s-%d", $letter, $i), null);
+            IndividualMatch::add($c1, $c2, $group->id, sprintf("Poolmatch %s-%d", $letter, $i), null);
         }
     }
 
@@ -59,7 +59,7 @@ class IndividualSeed extends Seed {
 
     private function orderMatches($area_count = 2)
     {
-        $matches = Match::selectRaw('depth, count(matches.id) as count')
+        $matches = IndividualMatch::selectRaw('depth, count(matches.id) as count')
             ->orderBy('depth', 'DESC')
             ->orderBy('id', 'ASC')
             ->groupBy('depth')
@@ -67,7 +67,7 @@ class IndividualSeed extends Seed {
 
 
         $matches = $matches->map(function($record){
-            $record->matchIds = Match::where('depth', $record->depth)->orderBy('id')->pluck('id')->implode(',');
+            $record->matchIds = IndividualMatch::where('depth', $record->depth)->orderBy('id')->pluck('id')->implode(',');
             return $record;
         });
 
@@ -98,7 +98,7 @@ class IndividualSeed extends Seed {
         foreach ($sortedMatches as $depth => $areas) {
             foreach ($areas as $area_id => $matches) {
                 foreach ($matches as $i => $match_id) {
-                    Match::find($match_id)->assignToArea($number, $area_id);
+                    IndividualMatch::find($match_id)->assignToArea($number, $area_id);
                     $number++;
                 }
             }

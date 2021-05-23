@@ -19,14 +19,14 @@
         ]
     },
     "require": {
-        "php": ">=7.2.*",
+        "php": ">=7.2",
         "kalnoy/nestedset": "^5",
-        "illuminate/database": "7.*"
+        "illuminate/database": "8.*",
+        "fakerphp/faker": "^1.14"
     },
     "require-dev":{
         "symfony/var-dumper": "~2.6",
-        "phpunit/phpunit": "^8.0",
-        "laracasts/testdummy": "^2.3",
-        "fzaninotto/faker": "1.4"
+        "phpunit/phpunit": "^8.0"
     }
+
 }

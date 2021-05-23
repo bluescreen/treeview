@@ -3,7 +3,7 @@
 
 use ITaikai\Competition;
 use ITaikai\Group;
-use ITaikai\Match;
+use ITaikai\IndividualMatch;
 use ITaikai\Referee;
 use ITaikai\Round;
 use ITaikai\Seed\IndividualSeed;
@@ -26,7 +26,7 @@ class IndividualSeedingTest extends TestCase {
         $seed  = new IndividualSeed();
         $seed->setup('random');
 
-        $match = Match::first();
+        $match = IndividualMatch::first();
         $this->assertNotNull($match);
         $this->assertCount(3, $match->referees);
         $this->assertEquals('RandomMatch', $match->type);
@@ -44,8 +44,8 @@ class IndividualSeedingTest extends TestCase {
         $this->assertEquals('elimination', $round->type);
         $this->assertEquals(8, $round->seeds_count);
         $this->assertEquals(3, $round->depth);
-        $this->assertEquals(7, Match::count());
-        $this->assertEquals(4, Match::getLeafs()->count());
+        $this->assertEquals(7, IndividualMatch::count());
+        $this->assertEquals(4, IndividualMatch::getLeafs()->count());
     }
 
     /** @test */
@@ -61,7 +61,7 @@ class IndividualSeedingTest extends TestCase {
         $this->assertEquals('pool', $round->type);
         $this->assertEquals(12, $round->seeds_count);
         $this->assertEquals(4, Group::count());
-        $this->assertEquals(12, Match::count());
+        $this->assertEquals(12, IndividualMatch::count());
     }
 
     /** @test */
@@ -77,7 +77,7 @@ class IndividualSeedingTest extends TestCase {
         $this->assertEquals('both', $round->type);
         $this->assertEquals(24, $round->seeds_count);
         $this->assertEquals(8, Group::count());
-        $this->assertEquals(24, Match::count());
+        $this->assertEquals(24, IndividualMatch::count());
     }
 
     /** @test */
@@ -89,7 +89,7 @@ class IndividualSeedingTest extends TestCase {
 
         $this->assertEquals(1, Group::count());
         $this->assertEquals(12, Group::first()->group_size);
-        $this->assertEquals(66, Match::count()); // Pool Jeder gegen jeden
+        $this->assertEquals(66, IndividualMatch::count()); // Pool Jeder gegen jeden
     }
 
 

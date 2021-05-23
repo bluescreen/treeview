@@ -6,9 +6,11 @@ use ITaikai\Behavior\Eliminiation;
 use ITaikai\Behavior\Fightable;
 use ITaikai\Behavior\NestedSet;
 
-class Match extends Model {
+class IndividualMatch extends Model {
 
     use NestedSet, Fightable, Eliminiation;
+
+    protected $table = 'matches';
 
     const WAITING       = 0;
     const RUNNING       = 1;
@@ -72,8 +74,8 @@ class Match extends Model {
     {
         do {
             /** @var Collection  $matches */
-            $matches =  Match::where('depth', $depth)->get();
-            $matches->each(function (Match $match) {
+            $matches =  IndividualMatch::where('depth', $depth)->get();
+            $matches->each(function (IndividualMatch $match) {
                 $match->simulate();
             });
             $depth--;
@@ -99,11 +101,11 @@ class Match extends Model {
 
     public static function getMatchPartcipants()
     {
-        $matches = Match::with('red', 'white')->whereRaw('rght = lft + 1')->get();
+        $matches = IndividualMatch::with('red', 'white')->whereRaw('rght = lft + 1')->get();
 
         $result = [];
         $pos    = 0;
-        /** @var Match $match */
+        /** @var IndividualMatch $match */
         foreach ($matches as $match) {
             $result[] = ['id' => $match->white_id, 'name' => $match->getWhiteName(), 'pos' => $pos];
             $pos++;
@@ -116,10 +118,10 @@ class Match extends Model {
     public static function getTreeMatches()
     {
         /** @var Collection $matches */
-        $matches = Match::orderBy('id', 'ASC')->get();
-        return $matches->filter(function(Match $match){
+        $matches = IndividualMatch::orderBy('id', 'ASC')->get();
+        return $matches->filter(function(IndividualMatch $match){
             return $match->white_id != -1 && $match->red_id != -1;
-        })->map(function (Match $match) {
+        })->map(function (IndividualMatch $match) {
             return [
                 'title'        => $match->title,
                 'white_id'     => (int)$match->white_id,
@@ -142,7 +144,7 @@ class Match extends Model {
     {
         //$data = $this->find("list", ['order' => 'lft', 'fields' => 'Match.id,Match.id']);
         //$data    = self::orderBy('lft')->pluck('id', 'id')->all();
-        $paths  = Match::selectRaw("winner_id,group_concat(id) as path")
+        $paths  = IndividualMatch::selectRaw("winner_id,group_concat(id) as path")
             ->where('winner_id', '>', 0)->groupBy('winner_id')->get();
         $result = [];
         foreach ($paths as $row) {
@@ -164,7 +166,7 @@ class Match extends Model {
     {
         $score = ['men' => 0, 'kote' => 0, 'do' => 0, 'tsuki' => 0, 'penalty' => 0, 'hansoku' => 0];
 
-        /** @var Match $match */
+        /** @var IndividualMatch $match */
         $match = self::create([
             'white_id'    => $competitor1,
             'red_id'      => $competitor2,

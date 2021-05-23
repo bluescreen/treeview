@@ -7,7 +7,7 @@ use Exception;
 use ITaikai\Competition;
 use ITaikai\Configure;
 use ITaikai\Group;
-use ITaikai\Match;
+use ITaikai\IndividualMatch;
 use ITaikai\Round;
 
 abstract class Seed {
@@ -39,7 +39,7 @@ abstract class Seed {
 
         $group_size = $current['group_size'];
         $team_size = $current['team_size'];
-        Match::truncate();
+        IndividualMatch::truncate();
 
         $seeds = array_keys($this->getSeedingList(false));
         $round = Round::create([
@@ -93,7 +93,7 @@ abstract class Seed {
     protected function recursivePlayoffMatchTree($depth = 0, $count = 0, $parentId = null)
     {
         if ($depth < 0) {
-            Match::fixTree();
+            IndividualMatch::fixTree();
             return;
         }
         if ($this->maxDepth == null) {
@@ -101,7 +101,7 @@ abstract class Seed {
         }
 
         $nextMatchId = ($this->depthCounts[$depth] % 2 == 0) ? 1 : 2;
-        $match       = Match::addEmpty($this->generateMatchName($depth, $count), $parentId, $count, $nextMatchId);
+        $match       = IndividualMatch::addEmpty($this->generateMatchName($depth, $count), $parentId, $count, $nextMatchId);
 
         $this->countMatches++;
         $this->depthCounts[$depth]++;

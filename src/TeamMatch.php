@@ -15,8 +15,8 @@ class TeamMatch extends Model {
         /** @var TeamMatch $teamMatch */
         $teamMatch = TeamMatch::create([
             'title'    => $string,
-            'team_id1' => Match::EMPTY_PLACE,
-            'team_id2' => Match::EMPTY_PLACE,
+            'team_id1' => IndividualMatch::EMPTY_PLACE,
+            'team_id2' => IndividualMatch::EMPTY_PLACE,
             'depth'    => $depth,
             'next_pos' => $nextMatchId
         ]);
@@ -32,7 +32,7 @@ class TeamMatch extends Model {
 
     public function matches()
     {
-        return $this->hasMany(Match::class, 'team_matches_id');
+        return $this->hasMany(IndividualMatch::class, 'team_matches_id');
     }
 
     public function red()
@@ -58,7 +58,7 @@ class TeamMatch extends Model {
             $competitor2 = isset($team2->participants[$i]) ? $team2->participants[$i]->pivot->participant_id : -1;
             $title       = $this->title . " " . $positions[$i];
 
-            $match = Match::createTeamSubMatch($competitor1, $competitor2, $this->id, $title, $i + 1);
+            $match = IndividualMatch::createTeamSubMatch($competitor1, $competitor2, $this->id, $title, $i + 1);
             if ($i == 0) {
                 $first_match = $match->id;
             }

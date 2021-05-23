@@ -26,5 +26,5 @@ To generate and simulate a elimination round
 Competitor::participateAll();
 $seed = new IndividualSeed();
 $seed->setup('elimination');
-Match::simulateAll($seed->getDepth());
+IndividualMatch::simulateAll($seed->getDepth());
 ```

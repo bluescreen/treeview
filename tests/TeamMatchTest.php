@@ -1,7 +1,7 @@
 <?php
 
 
-use ITaikai\Match;
+use ITaikai\IndividualMatch;
 use ITaikai\Participant;
 use ITaikai\Team;
 use ITaikai\TeamMatch;
@@ -19,7 +19,7 @@ class TeamMatchTest extends TestCase {
         $teamMatch = TeamMatch::addEmpty("TestMatch", 1,1,1);
 
         $this->assertEquals(1, TeamMatch::count());
-        $this->assertEquals(5, Match::count());
+        $this->assertEquals(5, IndividualMatch::count());
         $this->assertEquals(1, $teamMatch->parent_id);
         $this->assertEquals(1, $teamMatch->depth);
         $this->assertEquals(1, $teamMatch->next_pos);

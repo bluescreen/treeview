@@ -1,7 +1,7 @@
 <?php
 
 
-use ITaikai\Match;
+use ITaikai\IndividualMatch;
 
 class FightableTest extends TestCase {
 
@@ -67,7 +67,7 @@ class FightableTest extends TestCase {
     {
         $match = $this->makeMatch(['points_white' => 1, 'points_red' => 0]);
         $this->assertEquals(false, $match->checkWinner(10));
-        $this->assertEquals(Match::RUNNING, $match->status);
+        $this->assertEquals(IndividualMatch::RUNNING, $match->status);
     }
 
     /** @test */
@@ -82,13 +82,13 @@ class FightableTest extends TestCase {
     /** @test */
     public function it_should_simulate_all_matches()
     {
-        $rootMatch = factory(Match::class, ['depth' => 0])->makeRoot();
-        factory(Match::class, ['depth' => 1, 'next_pos' => $rootMatch->id])->setParentId($rootMatch->id)->save();
-        factory(Match::class, ['depth' => 1, 'next_pos' => $rootMatch->id])->setParentId($rootMatch->id)->save();
-        Match::fixTree();
-        Match::simulateAll(2);
+        $rootMatch = factory(IndividualMatch::class, ['depth' => 0])->makeRoot();
+        factory(IndividualMatch::class, ['depth' => 1, 'next_pos' => $rootMatch->id])->setParentId($rootMatch->id)->save();
+        factory(IndividualMatch::class, ['depth' => 1, 'next_pos' => $rootMatch->id])->setParentId($rootMatch->id)->save();
+        IndividualMatch::fixTree();
+        IndividualMatch::simulateAll(2);
 
-        $this->assertNotNull(Match::getTotalWinner());
+        $this->assertNotNull(IndividualMatch::getTotalWinner());
     }
 
     /** @test */
@@ -125,12 +125,12 @@ class FightableTest extends TestCase {
 
     /**
      * @param array $overides
-     * @return Match
+     * @return IndividualMatch
      */
     private function makeMatch(array $overides = [])
     {
-        /** @var Match $match */
-        $match = factory(Match::class, $overides);
+        /** @var IndividualMatch $match */
+        $match = factory(IndividualMatch::class, $overides);
         return $match;
     }
 }

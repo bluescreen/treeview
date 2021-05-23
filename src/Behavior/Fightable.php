@@ -6,13 +6,13 @@ namespace ITaikai\Behavior;
 
 use Exception;
 use ITaikai\Configure;
-use ITaikai\Match;
+use ITaikai\IndividualMatch;
 
 /**
  * Class Fightable
  * @package ITaikai
  *
- * @mixin Match
+ * @mixin IndividualMatch
  */
 trait Fightable {
     protected $history = [];
@@ -228,7 +228,7 @@ trait Fightable {
 
     public function addPoint($player, $hit, $time = null)
     {
-        if (in_array($this->status, [self::FINISHED, Match::PAUSED])) {
+        if (in_array($this->status, [self::FINISHED, IndividualMatch::PAUSED])) {
             return;
         }
         $score_field          = $this->score_fields[$player];
@@ -280,7 +280,7 @@ trait Fightable {
 
     public function removePoint($player, $hit, $time = null)
     {
-        if (in_array($this->status, [self::FINISHED, Match::PAUSED])) {
+        if (in_array($this->status, [self::FINISHED, IndividualMatch::PAUSED])) {
             return false;
         }
         $score_field = $this->score_fields[$player];
