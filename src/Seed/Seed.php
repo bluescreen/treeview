@@ -18,7 +18,7 @@ abstract class Seed {
     protected $maxDepth = null;
     protected $countMatches = 0;
 
-    protected $depthNames    = [0 => 'Final', 1 => 'Semifinal', '2' => 'Quarterfinal'];
+    protected $depthNames    = [0 => 'F', 1 => 'S', '2' => 'Q'];
     protected $depthCounts   = [0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0];
 
     abstract function getSeedingList($type);

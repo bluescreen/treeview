@@ -50,6 +50,7 @@ function factory($class, array $attributes = [], $times = 1)
         $model->fill($data + $attributes);
         $model->save();
     }
+    return $model;
 }
 
 

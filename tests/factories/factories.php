@@ -3,7 +3,7 @@
 use ITaikai\Competition;
 use ITaikai\Competitor;
 use ITaikai\Group;
-use ITaikai\Match;
+use ITaikai\IndividualMatch;
 use ITaikai\Referee;
 use ITaikai\Team;
 

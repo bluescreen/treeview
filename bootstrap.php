@@ -9,7 +9,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 if (APPLICATION_ENV == 'testing') {
     touch($config['database']);
-    exec("sqlite3 ".$config['database']." < data.sql");
+    exec("sqlite3 ".$config['database']." < ".APPLICATION_PATH."/data.sql");
 }
 
 $capsule = new Capsule;

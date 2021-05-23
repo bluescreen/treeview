@@ -29,4 +29,7 @@ $participants = IndividualMatch::getMatchPartcipants();
 $paths        = IndividualMatch::getTreePaths();
 
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Max-Age: 86400');
 die(json_encode(compact('num','depth', 'pools', 'participants', 'matches', 'paths', 'winner')));
