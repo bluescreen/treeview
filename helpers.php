@@ -39,7 +39,7 @@ function matrix($w, $h, $val = 0)
 function factory($class, array $attributes = [], $times = 1)
 {   
     for($i=0;$i< $times;$i++){
-        $faker = Faker\Factory::create();
+        $faker = Faker\Factory::create("de");
         $factories = include "tests/factories/factories.php";
         if(!isset($factories[$class])){
             throw new Exception("Factory for $class not found");
